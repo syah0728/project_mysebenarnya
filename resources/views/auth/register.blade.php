@@ -68,6 +68,16 @@
                 </div>
 
                 <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700">
+                        <i class="fas fa-phone mr-2"></i>Phone Number
+                    </label>
+                    <input id="phone" name="phone" type="tel" value="{{ old('phone') }}" required
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring focus:ring-blue-300 focus:border-blue-500 sm:text-sm">
+                    @error('phone')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div>
                     <button type="submit"
                         class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white 
                                bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 

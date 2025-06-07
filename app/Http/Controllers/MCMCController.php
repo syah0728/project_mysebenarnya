@@ -22,16 +22,15 @@ class MCMCController extends Controller
         return view('MCMC.dashboard', array_merge($stats, ['recent' => $recent]));
     }
 
-    public function inquiryList($user_id)
+    public function InquiryList()
     {
-        $this->authorizeUser($user_id);
-
-        $inquiries = Inquiry::with(['user', 'agency'])
-            ->unassigned()
-            ->latest()
-            ->get();
+        $inquiries = Inquiry::with('publicUser')
+                        ->where('InquiryStatus', 'Pending')
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+        
         $agencies = Agency::all();
-
+        
         return view('MCMC.InquiryList', compact('inquiries', 'agencies'));
     }
 

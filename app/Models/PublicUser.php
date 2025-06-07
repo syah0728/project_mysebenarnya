@@ -2,18 +2,27 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class PublicUser extends Model
 {
-    protected $table = 'publicuser'; // because default is plural
+    use HasFactory;
 
-    public $timestamps = true;
+    protected $table = 'publicuser'; // Specify the table name as per your database
 
-    protected $fillable = ['id']; // or more if needed
+    protected $fillable = [
+        'user_id',
+        'name',
+        'email',
+        'phone',
+    ];
 
+    /**
+     * Get the user that owns the PublicUser
+     */
     public function user()
     {
-        return $this->belongsTo(User::class, 'id', 'id');
+        return $this->belongsTo(User::class);
     }
 }

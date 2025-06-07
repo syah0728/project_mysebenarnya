@@ -27,7 +27,7 @@
                         <td class="px-4 py-3 text-center">
                             <span class="inline-flex items-center gap-2">
                                 <span class="bg-blue-200 text-blue-800 rounded-full px-3 py-1 text-xs font-bold">
-                                    {{ $inquiry->user ? $inquiry->user->name : 'N/A' }}
+                                    {{ $inquiry->publicUser ? $inquiry->publicUser->name : 'N/A' }}
                                 </span>
                             </span>
                         </td>

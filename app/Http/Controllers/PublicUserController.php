@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\PublicUser;
 use App\Models\Inquiry;
 
+
 class PublicUserController extends Controller
 {
     public function storeInquiry(Request $request, $user_id)
@@ -20,9 +21,10 @@ class PublicUserController extends Controller
         if ($request->hasFile('proof')) {
             $attachmentPath = $request->file('proof')->store('attachments', 'public');
         }
-
+        $user = Auth::user();
+        $publicUser = PublicUser::where('user_id', $user->id)->first();
         Inquiry::create([
-            'PublicUser_id' => $user_id,
+            'PublicUser_id' => $publicUser->id,
             'NewsTitle' => $request->title,
             'NewsContent' => $request->content,
             'NewsSource' => $request->source,
@@ -35,15 +37,31 @@ class PublicUserController extends Controller
             ->with('success', 'Inquiry submitted successfully!');
     }
     //display the inquiry history for a public user
+    
     public function inquiryHistory($user_id)
     {
-        if (!auth()->user()->isPublicUser() || auth()->id() != $user_id) {
+        // Check if user is authenticated and authorized
+        $user = Auth::user();
+        if (!$user || $user->id != $user_id) {
             abort(403, 'Unauthorized action.');
         }
 
-        $inquiries = Inquiry::getByPublicUser($user_id);
+        // Get the public user record
+        $publicUser = PublicUser::where('user_id', $user_id)->first();
+        if (!$publicUser) {
+            abort(404, 'Public user not found.');
+        }
 
-        return view('PublicUser.InquiryHistory', compact('inquiries'));
+        // Get all inquiries for this public user
+        $inquiries = Inquiry::where('PublicUser_id', $publicUser->id)
+                        ->orderBy('InquiryDate', 'desc')
+                        ->get();
+
+        return view('PublicUser.InquiryHistory', [
+            'inquiries' => $inquiries,
+            'user' => $user,
+            'publicUser' => $publicUser
+        ]);
     }
 
     // View a specific inquiry

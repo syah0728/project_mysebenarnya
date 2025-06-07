@@ -57,7 +57,7 @@
                                     <td class="px-4 py-2 text-gray-500">{{ \Carbon\Carbon::parse($inquiry->created_at)->format('d M Y') }}</td>
                                     <td class="px-4 py-2 text-gray-700">
                                         <span class="bg-blue-200 text-blue-800 rounded-full px-3 py-1 text-xs font-bold">
-                                            {{ $inquiry->user ? $inquiry->user->name : 'Unknown' }}
+                                            {{ $inquiry->publicUser ? $inquiry->publicUser->name : 'N/A' }}
                                         </span>
                                     </td>
                                 </tr>

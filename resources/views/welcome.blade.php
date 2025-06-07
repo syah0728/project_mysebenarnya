@@ -144,10 +144,6 @@
         <div class="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 py-20 overflow-hidden">
             <canvas id="orb-canvas"></canvas>
 
-            <!-- Floating Icons -->
-            <i class="fas fa-shield-alt text-white text-6xl absolute top-20 left-20 animate-bounce-slow opacity-20"></i>
-            <i class="fas fa-bullhorn text-white text-5xl absolute bottom-16 right-24 animate-pulse-slow opacity-20"></i>
-
             <div class="relative z-10 text-center px-4 w-full max-w-6xl mx-auto" data-aos="fade-up">
                 <h1 class="text-4xl md:text-6xl font-bold mb-6 text-white drop-shadow-[0_2px_15px_rgba(255,255,255,0.5)]">Welcome MySebenarnya System</h1>
                 <p class="text-xl mb-8 text-white/90">Verifying the truth behind every headline.</p>
