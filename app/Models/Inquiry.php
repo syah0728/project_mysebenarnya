@@ -4,6 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Assignment;
+use App\Models\PublicUser;
+use App\Models\Mcmc;
+use App\Models\Agency;
+use App\Models\Progress;
+use Illuminate\Support\Facades\DB;
+
 
 class Inquiry extends Model
 {
@@ -111,20 +118,50 @@ class Inquiry extends Model
     }
 
     // Business logic for assigning inquiry
-    public function assignTo(Agency $agency)
+    public function assignTo(Agency $agency, $dueDate, $comments)
     {
-        $this->Agency_id = $agency->id;
-        $this->InquiryStatus = 'Assigned';
-        $this->save();
+        try {
+            DB::beginTransaction();
 
-        // Create assignment record
-        return Assignment::create([
-            'Inquiry_id' => $this->id,
-            'Agency_id' => $agency->id,
-            'PublicUser_id' => $this->PublicUser_id,
-            'AssignmentDate' => now(),
-            'AssignmentStatus' => 'Assigned',
-        ]);
+            // Update inquiry status
+            $this->Agency_id = $agency->id;
+            $this->InquiryStatus = 'Assigned';
+            $this->save();
+
+            // Create assignment record
+            $assignment = Assignment::create([
+                'Inquiry_id' => $this->id,
+                'Agency_id' => $agency->id,
+                'PublicUser_id' => $this->PublicUser_id,
+                'AssignmentDate' => now()->toDateString(), // <-- FIXED
+                'due_date' => $dueDate,
+                'comments' => $comments,
+                'AssignmentStatus' => 'Assigned'
+            ]);
+
+            DB::commit();
+            return $assignment;
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Assignment creation failed: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    public function assignToAgency($agencyId, $status = 'Assigned')
+    {
+        $this->Agency_id = $agencyId;
+        $this->InquiryStatus = $status;
+        return $this->save();
+    }
+
+    public static function getPendingInquiries()
+    {
+        return static::with('publicUser')
+            ->where('InquiryStatus', 'Pending')
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
     // Stats methods
@@ -159,4 +196,9 @@ class Inquiry extends Model
     {
         return $this->hasMany(Progress::class, 'Inquiry_id');
     }
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class); // Adjust as needed
+    }
+
 }

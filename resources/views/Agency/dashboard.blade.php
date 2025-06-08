@@ -1,29 +1,28 @@
 @extends('layouts.dashboard')
 @section('content')
 <div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-8">
+    <div class="min-w-full bg-green-50 border border-green-200 rounded-2xl shadow-xl p-8">
+        <!-- <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-8"> -->
             <h2 class="text-2xl font-bold mb-6 text-gray-800">Welcome, {{ Auth::user()->name }} (Agency)!</h2>
 
             <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div class="bg-blue-100 p-6 rounded-lg shadow text-center">
-                    <div class="text-3xl font-bold text-blue-600 mb-2">{{ $total }}</div>
-                    <div class="text-gray-700">Total Assigned Inquiries</div>
-                </div>
-                <div class="bg-yellow-100 p-6 rounded-lg shadow text-center">
-                    <div class="text-3xl font-bold text-yellow-600 mb-2">{{ $pending }}</div>
-                    <div class="text-gray-700">Pending</div>
-                </div>
-                <div class="bg-orange-100 p-6 rounded-lg shadow text-center">
-                    <div class="text-3xl font-bold text-orange-600 mb-2">{{ $inProgress }}</div>
-                    <div class="text-gray-700">In Progress</div>
-                </div>
-                <div class="bg-green-100 p-6 rounded-lg shadow text-center">
-                    <div class="text-3xl font-bold text-green-600 mb-2">{{ $resolved }}</div>
-                    <div class="text-gray-700">Resolved</div>
+            <div class="flex justify-center mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center">
+                    <div class="bg-blue-100 p-6 rounded-xl shadow text-center min-w-[250px]">
+                        <div class="text-3xl font-bold text-blue-600 mb-2">{{ $total }}</div>
+                        <div class="text-gray-800">Total Assigned Inquiries</div>
+                    </div>
+                    <div class="bg-yellow-100 p-6 rounded-xl shadow text-center min-w-[250px]">
+                        <div class="text-3xl font-bold text-yellow-700 mb-2">{{ $pending }}</div>
+                        <div class="text-gray-800">Total Need to Verify</div>
+                    </div>
+                    <div class="bg-green-100 p-6 rounded-xl shadow text-center min-w-[250px]">
+                        <div class="text-3xl font-bold text-green-700 mb-2">{{ $resolved }}</div>
+                        <div class="text-gray-800">Total that have been Resolved</div>
+                    </div>
                 </div>
             </div>
+
 
             <!-- Recent Assigned Inquiries Table -->
             <div class="bg-white rounded-lg shadow p-6">
@@ -42,7 +41,7 @@
                                 <th class="px-4 py-2 text-left text-xs font-medium uppercase">Status</th>
                                 <th class="px-4 py-2 text-left text-xs font-medium uppercase">Submitted By</th>
                                 <th class="px-4 py-2 text-left text-xs font-medium uppercase">Date</th>
-                                <th class="px-4 py-2"></th>
+                                <!-- <th class="px-4 py-2"></th> -->
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
@@ -61,18 +60,18 @@
                                     </td>
                                     <td class="px-4 py-2">
                                         <span class="bg-blue-100 text-blue-800 rounded-full px-2 py-1 text-xs font-semibold">
-                                            {{ $inquiry->user ? $inquiry->user->name : 'Unknown' }}
+                                            {{ $inquiry->publicUser ? $inquiry->publicUser->name : 'Unknown' }}
                                         </span>
                                     </td>
                                     <td class="px-4 py-2 text-gray-500 text-sm">
                                         {{ \Carbon\Carbon::parse($inquiry->created_at)->format('d M Y') }}
                                     </td>
-                                    <td class="px-4 py-2 text-right">
+                                    <!-- <td class="px-4 py-2 text-right">
                                         <a href="{{ route('Agency.viewInquiry', ['user_id' => Auth::id(), 'inquiry_id' => $inquiry->id]) }}" 
                                         class="text-blue-600 hover:text-blue-800 font-medium text-sm">
                                             View Details
                                         </a>
-                                    </td>
+                                    </td> -->
                                 </tr>
                             @empty
                                 <tr>
@@ -93,7 +92,7 @@
                     </table>
                 </div>
             </div>
-        </div>
+        <!-- </div> -->
     </div>
 </div>
 @endsection

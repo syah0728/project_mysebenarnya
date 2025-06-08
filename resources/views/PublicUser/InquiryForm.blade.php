@@ -2,8 +2,7 @@
 @section('content')
 <div class="max-w-xl mx-auto mt-10 bg-white p-8 rounded shadow">
     <h2 class="text-2xl font-bold mb-6 text-gray-800">Submit New Inquiry</h2>
-    <form method="POST" action="{{ route('PublicUser.storeInquiry', ['user_id' => Auth::id()]) }}">
-        @csrf
+    <form method="POST" action="{{ route('PublicUser.storeInquiry', ['user_id' => Auth::id()]) }}" enctype="multipart/form-data">        @csrf
 
         <div class="mb-4">
             <label for="title" class="block text-gray-700 font-semibold mb-2">Title</label>

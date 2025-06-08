@@ -19,8 +19,15 @@ class PublicUserController extends Controller
 
         $attachmentPath = null;
         if ($request->hasFile('proof')) {
-            $attachmentPath = $request->file('proof')->store('attachments', 'public');
+            $file = $request->file('proof');
+            if ($file->isValid()) {
+                $attachmentPath = $file->store('attachments', 'public');
+                \Log::info('File uploaded to: ' . $attachmentPath);
+            } else {
+                \Log::error('Uploaded file is not valid.');
+            }
         }
+
         $user = Auth::user();
         $publicUser = PublicUser::where('user_id', $user->id)->first();
         Inquiry::create([

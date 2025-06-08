@@ -112,23 +112,15 @@ Route::middleware([
     // MCMC Routes Group
     Route::prefix('MCMC/{user_id}')->name('MCMC.')->group(function () {
 
-        Route::get('/dashboard', [MCMCController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [MCMCController::class, 'dashboard'])->name('dashboard');
 
-        // Route::get('/dashboard', function ($user_id) {
-        //     if (!auth()->user()->isMCMC() || auth()->id() != $user_id) {
-        //         abort(403, 'Unauthorized action.');
-        //     }
-        //     return view('MCMC.dashboard');
-        // })->name('dashboard');
-        Route::get('/profile', function ($user_id) {
-            if (!auth()->user()->isMCMC() || auth()->id() != $user_id) {
-                abort(403, 'Unauthorized action.');
-            }
-            return view('MCMC.profile');
-        })->name('profile');
+    Route::get('/profile', function ($user_id) {
+        if (!auth()->user()->isMCMC() || auth()->id() != $user_id) {
+            abort(403, 'Unauthorized action.');
+        }
+        return view('MCMC.profile');
+    })->name('profile');
 
-    
-    // Profile (User Data)
     Route::get('/user-data', function ($user_id) {
         if (!auth()->user()->isMCMC() || auth()->id() != $user_id) {
             abort(403, 'Unauthorized action.');
@@ -137,18 +129,18 @@ Route::middleware([
     })->name('UserData');
 
     // Inquiry List
-    Route::get('/inquiries', [\App\Http\Controllers\MCMCController::class, 'inquiryList'])->name('InquiryList');
+    Route::get('/inquiry', [MCMCController::class, 'inquiryList'])->name('InquiryList');
 
-    // Assign Inquiry
-    // View Assigned Inquiries (GET)
-    Route::get('/assigned-inquiry', [MCMCController::class, 'assignedInquiry'])
-        ->name('AssignedInquiry');
+    // View Assigned Inquiries
+    Route::get('/assigned-inquiry', [MCMCController::class, 'assignedInquiry'])->name('AssignedInquiry');
 
     // Process Inquiry Assignment (POST)
-    Route::post('/assign-inquiry', [MCMCController::class, 'assignInquiry'])
-        ->name('AssignInquiry');
-    //Route::post('/assigned-inquiry/{inquiry_id}', [\App\Http\Controllers\MCMCController::class, 'assignInquiry'])->name('AssignedInquiry.post');
-    });
+    Route::post('/assign-inquiry', [MCMCController::class, 'assignInquiry'])->name('AssignInquiry');
+
+    // View Single Inquiry Details
+    Route::get('/inquiry/{inquiry_id}/review', [MCMCController::class, 'inquiryReview'])->name('InquiryReview');
+});
+
 
 
 
@@ -157,6 +149,7 @@ Route::middleware([
     Route::prefix('Agency/{user_id}')->name('Agency.')->group(function () {
     // Dashboard
     Route::get('/dashboard', [AgencyController::class, 'dashboard'])->name('dashboard');
+    
 
     // Profile
     Route::get('/profile', function ($user_id) {
@@ -177,10 +170,7 @@ Route::middleware([
     })->name('InquiryHistory');
 
     // Inquiry List
-    Route::get('/inquiry-list', function ($user_id) {
-        if (!auth()->user()->isAgency() || auth()->id() != $user_id) {
-            abort(403, 'Unauthorized action.');
-        }
-        return view('Agency.InquiryList');
-    })->name('InquiryList');
+    Route::get('/inquiries', [AgencyController::class, 'inquiryList'])->name('InquiryList');
+
+    Route::get('/inquiry/{inquiry_id}/review', [AgencyController::class, 'inquiryReview'])->name('InquiryReview');
 });
