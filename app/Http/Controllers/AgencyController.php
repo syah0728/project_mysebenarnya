@@ -79,4 +79,6 @@ class AgencyController extends Controller
 
         return view('Agency.InquiryReview', compact('inquiry'));
     }
+
+
 }

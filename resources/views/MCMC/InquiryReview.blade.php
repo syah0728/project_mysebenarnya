@@ -51,10 +51,23 @@
             
         </div>
 
+        <div class="mt-6 flex justify-end">
+            <form method="POST" action="{{ route('MCMC.rejectInquiry', ['user_id' => auth()->id(), 'inquiry_id' => $inquiry->id]) }}" class="mt-6">
+                @csrf
+                @method('PUT')
+                <button type="submit"
+                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                    Reject Inquiry
+                </button>
+            </form>
+        </div>
+
         <a href="{{ route('MCMC.InquiryList', ['user_id' => auth()->id()]) }}"
             class="mt-6 inline-block text-blue-600 hover:underline">
                 ← Back to Inquiry List
         </a>
+
+        
         
     </div>
 </div>

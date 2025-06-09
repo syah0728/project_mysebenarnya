@@ -100,4 +100,19 @@ class MCMCController extends Controller
             abort(403, 'Unauthorized access.');
         }
     }
+
+    public function rejectInquiry($user_id, $inquiry_id)
+    {
+        // Check authorization
+        if (auth()->id() != $user_id) {
+            abort(403, 'Unauthorized');
+        }
+
+        $inquiry = Inquiry::findOrFail($inquiry_id);
+        $inquiry->InquiryStatus = 'Rejected';
+        $inquiry->save();
+
+        return redirect()->route('MCMC.InquiryList', ['user_id' => $user_id])
+                        ->with('success', 'Inquiry rejected successfully.');
+    }
 }

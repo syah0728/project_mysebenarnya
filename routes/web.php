@@ -139,6 +139,9 @@ Route::middleware([
 
     // View Single Inquiry Details
     Route::get('/inquiry/{inquiry_id}/review', [MCMCController::class, 'inquiryReview'])->name('InquiryReview');
+
+    // Reject Inquiry
+    Route::put('/inquiry/{inquiry_id}/reject', [MCMCController::class, 'rejectInquiry'])->name('rejectInquiry');
 });
 
 
@@ -173,4 +176,6 @@ Route::middleware([
     Route::get('/inquiries', [AgencyController::class, 'inquiryList'])->name('InquiryList');
 
     Route::get('/inquiry/{inquiry_id}/review', [AgencyController::class, 'inquiryReview'])->name('InquiryReview');
+
+
 });

@@ -1,15 +1,16 @@
 @extends('layouts.dashboard')
 @section('content')
-<div class="max-w-4xl mx-auto mt-10 bg-white p-8 rounded shadow">
+<div class="py-12">
+<div class="bg-gradient-to-tr from-cyan-200 via-blue-300 to-emerald-300 rounded-2xl shadow-xl p-8">
     <h2 class="text-2xl font-bold mb-6 text-gray-800">Inquiry History</h2>
     <div x-data="{ open: false, inquiry: {} }" x-cloak>
         <table class="min-w-full divide-y divide-gray-200">
             <thead>
                 <tr>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Date Submitted</th>
-                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
+                    <th class="px-4 py-2 text-left text-xs font-bold text-black-500 uppercase">Title</th>
+                    <th class="px-4 py-2 text-left text-xs font-bold text-black-500 uppercase">Status</th>
+                    <th class="px-4 py-2 text-left text-xs font-bold text-black-500 uppercase">Date Submitted</th>
+                    <th class="px-4 py-2 text-left text-xs font-bold text-black-500 uppercase">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -65,5 +66,6 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 @endsection
