@@ -1,7 +1,8 @@
 @extends('layouts.dashboard')
 @section('content')
-<div class="max-w-7xl mx-auto py-10 px-4">
-    <div class="min-w-full bg-green-50 border border-green-200 rounded-2xl shadow-xl p-8">
+<div class="py-12">
+    <div class="bg-gradient-to-tr from-indigo-200 via-purple-300 to-pink-300 rounded-2xl shadow-xl p-8">
+
         <h2 class="text-3xl font-extrabold text-center mb-8 text-gray-800 tracking-tight">Assigned Inquiries</h2>
         @if(session('success'))
             <div class="mb-6 px-4 py-3 rounded bg-green-100 text-green-800 font-semibold shadow">

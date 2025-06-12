@@ -25,4 +25,9 @@ class PublicUser extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function inquiries()
+    {
+        return $this->hasMany(Inquiry::class, 'PublicUser_id');
+    }
+
 }

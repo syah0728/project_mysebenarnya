@@ -1,7 +1,8 @@
 @extends('layouts.dashboard')
 @section('content')
-<div class="max-w-7xl mx-auto py-10 px-4">
-    <div class="min-w-full bg-green-50 border border-green-200 rounded-2xl shadow-xl p-8">
+<div class="py-12">
+    <div class="bg-gradient-to-tr from-indigo-200 via-purple-300 to-pink-300 rounded-2xl shadow-xl p-8">
+
         </div>
 </div>
 @endsection

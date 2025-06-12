@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 @section('content')
-<div class="max-w-7xl mx-auto py-10 px-4">
+<div class="py-12">
     <div class="bg-gradient-to-tr from-blue-100 via-purple-100 to-pink-100 rounded-2xl shadow-xl p-8">
         <h2 class="text-3xl font-extrabold text-center mb-8 text-gray-800 tracking-tight">Assigned Inquiries</h2>
         <div class="overflow-x-auto rounded-lg shadow">
@@ -23,7 +23,7 @@
                         </td>
                         <td class="px-4 py-3 text-center">
                             <span class="bg-purple-200 text-purple-800 rounded-full px-3 py-1 text-xs font-bold">
-                                {{ $inquiry->agency ? $inquiry->agency->name : 'N/A' }}
+                                {{ $inquiry->agency ? $inquiry->agency->user->name : 'N/A' }}
                             </span>
                         </td>
                         <td class="px-4 py-3 text-center">
@@ -45,6 +45,12 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+        <div class="flex justify-end mt-6">
+            <a href="{{ route('MCMC.InquiryAssignReport', ['user_id' => Auth::id()]) }}"
+            class="inline-block px-4 py-2 bg-indigo-500 text-white font-bold rounded hover:bg-indigo-700">
+                Generate Assignment Report
+            </a>
         </div>
     </div>
 </div>

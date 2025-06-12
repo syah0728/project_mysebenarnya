@@ -4,7 +4,7 @@
     <div class="bg-gradient-to-tr from-blue-100 via-purple-100 to-pink-100 rounded-2xl shadow-xl p-8">
         <!-- <div class="bg-gradient-to-tr from-blue-100 via-purple-100 to-pink-100 rounded-2xl shadow-xl p-8"> -->
             <h2 class="text-2xl font-bold mb-6 text-gray-800">Welcome, {{ Auth::user()->name }} (MCMC)!</h2>
-
+            
             <!-- Stats Cards -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <div class="bg-blue-100 p-6 rounded-lg shadow text-center">

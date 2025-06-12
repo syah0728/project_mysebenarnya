@@ -25,7 +25,8 @@ class Assignment extends Model
         'AssignmentDate',
         'due_date',
         'comments',
-        'AssignmentStatus'
+        'AssignmentStatus',
+        'rejection_reason',
     ];
 
     protected $dates = [

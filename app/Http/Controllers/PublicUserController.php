@@ -101,4 +101,19 @@ class PublicUserController extends Controller
 
         return view('PublicUser.dashboard', compact('total', 'pending', 'inProgress', 'resolved', 'recent'));
     }
+
+    public function publicInquiry($user_id)
+    {
+        if (auth()->id() != $user_id || !auth()->user()->isPublicUser()) {
+            abort(403, 'Unauthorized');
+        }
+
+        $inquiries = \App\Models\Inquiry::where('InquiryStatus', 'Verified')
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+
+        return view('PublicUser.PublicInquiry', compact('inquiries'));
+    }
+
+
     }

@@ -10,13 +10,6 @@
         <p class="mt-2"><strong>Title:</strong> {{ strtoupper($inquiry->NewsTitle) }}</p>
         <p class="mt-2"><strong>Content:</strong><br> {{ $inquiry->NewsContent }}</p>
         <p class="mt-2"><strong>Source:</strong> {{ $inquiry->NewsSource }}</p>
-        <!-- <p class="mt-2"><strong>Status:</strong> 
-            <span class="inline-flex px-2 py-1 rounded-full text-xs font-semibold
-                {{ $inquiry->InquiryStatus === 'Resolved' ? 'bg-green-100 text-green-800' : 
-                ($inquiry->InquiryStatus === 'In Progress' ? 'bg-orange-100 text-orange-800' : 
-                'bg-yellow-100 text-yellow-800') }}">
-                {{ $inquiry->InquiryStatus }}
-            </span> -->
         <p class="mt-2 text-sm text-gray-500">Submitted: {{ $inquiry->created_at->format('d M Y') }}</p>
 
         <div class="mt-4">
@@ -27,48 +20,52 @@
                 @endphp
 
                 @if(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif']))
-                    <!-- Display image -->
                     <img src="{{ asset('storage/' . $inquiry->attachment) }}" alt="Attachment" class="mt-2 max-w-full h-auto rounded">
                     <a href="{{ asset('storage/' . $inquiry->attachment) }}" target="_blank" class="text-blue-600 hover:underline">
                         Download Attachment
                     </a>
                 @elseif(in_array($fileExtension, ['pdf']))
-                    <!-- Embed PDF -->
                     <embed src="{{ asset('storage/' . $inquiry->attachment) }}" type="application/pdf" class="mt-2 w-full h-96" />
                     <a href="{{ asset('storage/' . $inquiry->attachment) }}" target="_blank" class="text-blue-600 hover:underline">
                         Download Attachment
-                    </a>    
+                    </a>
                 @else
-                    <!-- Provide download link for other file types -->
                     <a href="{{ asset('storage/' . $inquiry->attachment) }}" target="_blank" class="text-blue-600 hover:underline">
                         Download Attachment
                     </a>
                 @endif
-            
             @else
                 <p class="text-gray-500">No attachment found.</p>
             @endif
-            
         </div>
 
-        <div class="mt-6 flex justify-end">
-            <form method="POST" action="{{ route('MCMC.rejectInquiry', ['user_id' => auth()->id(), 'inquiry_id' => $inquiry->id]) }}" class="mt-6">
+        <!-- Status Dropdown and Submit Button -->
+        <div class="mt-6">
+            <form method="POST" action="{{ route('MCMC.rejectInquiry', ['user_id' => auth()->id(), 'inquiry_id' => $inquiry->id]) }}">
                 @csrf
                 @method('PUT')
+                <label for="status" class="block mb-2 font-medium text-gray-700">Update Inquiry Status:</label>
+                <select name="status" id="status" required class="block w-full mb-4 border-gray-300 rounded-md shadow-sm">
+                    <option value="">-- Select Status --</option>
+                    <option value="Flagged">Flagged</option>
+                    <!-- <option value="Rejected">Rejected</option> -->
+                    <option value="Discarded">Discarded</option>
+                </select>
+                <div class="flex justify-end mt-6">
                 <button type="submit"
-                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                    Reject Inquiry
+                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                    Submit Status
                 </button>
+                </div>
             </form>
         </div>
 
+        
         <a href="{{ route('MCMC.InquiryList', ['user_id' => auth()->id()]) }}"
-            class="mt-6 inline-block text-blue-600 hover:underline">
-                ← Back to Inquiry List
+            class="inline-block px-4 py-2 bg-indigo-500 text-white font-bold rounded hover:bg-indigo-700">
+            ← Back to Inquiry List
         </a>
 
-        
-        
     </div>
 </div>
 @endsection

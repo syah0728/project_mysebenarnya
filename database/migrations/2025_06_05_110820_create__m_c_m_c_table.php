@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             // Changed from MCMC_id to user_id and made it primary
             $table->foreignId('user_id')->unique()
-                                        ->constrained('user')
+                                        ->constrained('users')
                                         ->onDelete('cascade');
-            
-            $table->string('name');
-            $table->string('email')->unique();
+            // $table->string('name');
+            // $table->string('email')->unique();
+            $table->string('username');
             $table->string('phone');
             $table->timestamps();
         });

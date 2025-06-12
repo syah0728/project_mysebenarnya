@@ -1,13 +1,12 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<div class="max-w-4xl mx-auto py-10 px-4">
-    <div class="bg-gradient-to-tr from-blue-100 via-purple-100 to-pink-100 rounded-2xl shadow-xl p-8">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Inquiry Details</h2>
+<div class="py-12">
+    <div class="bg-gradient-to-tr from-indigo-200 via-purple-300 to-pink-300 rounded-2xl shadow-xl p-8">
+       <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Inquiry Details</h2>
 
 
         <p class="mt-2"><strong>Sender:</strong> {{ $inquiry->publicUser?->name ?? 'N/A' }}</p>
-
         <p class="mt-2"><strong>Title:</strong> {{ strtoupper($inquiry->NewsTitle) }}</p>
         <p class="mt-2"><strong>Content:</strong><br> {{ $inquiry->NewsContent }}</p>
         <p class="mt-2"><strong>Source:</strong> {{ $inquiry->NewsSource }}</p>
@@ -51,6 +50,26 @@
             @endif
             
         </div>
+        <div class="mt-6">
+            <form method="POST" action="{{ route('Agency.RejectInquiry', ['user_id' => Auth::id(), 'inquiry_id' => $inquiry->id]) }}">
+                @csrf
+                @method('PUT')
+
+                <input type="hidden" name="status" value="Rejected">
+                <div class="mb-4">
+                <label for="reason" class="block text-sm font-medium text-gray-700">Reason for Rejection</label>
+                <textarea name="reason" id="reason" rows="4" required
+                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                        placeholder="Explain why this inquiry does not fall under your agency's jurisdiction..."></textarea>
+
+                <button type="submit"class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                    Reject & Notify MCMC
+                </button>
+                </div>
+            </form>
+
+        </div>
+
 
         <a href="{{ route('Agency.InquiryList', ['user_id' => auth()->id()]) }}"
             class="mt-6 inline-block text-blue-600 hover:underline">

@@ -16,7 +16,7 @@ return new class extends Migration
             //Foreign keys
             $table->unsignedBigInteger('PublicUser_id');
             $table->unsignedBigInteger('MCMC_id')->nullable();
-            $table->unsignedBigInteger('Agency_id');
+            $table->unsignedBigInteger('Agency_id')->nullable();
             
             $table->String('NewsTitle');
             $table->String('NewsContent');

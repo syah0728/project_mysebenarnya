@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 @section('content')
-<div class="max-w-7xl mx-auto py-10 px-4">
+<div class="py-12">
     <div class="bg-gradient-to-tr from-blue-100 via-purple-100 to-pink-100 rounded-2xl shadow-xl p-8">
         <h2 class="text-3xl font-extrabold text-center mb-8 text-gray-800 tracking-tight">Unassigned Inquiries</h2>
         @if(session('success'))
@@ -8,6 +8,14 @@
                 {{ session('success') }}
             </div>
         @endif
+
+        <!-- Top Right Filter Button -->
+        <div class="mb-6 text-right">
+            <a href="{{ route('MCMC.FilteredInquiries', ['user_id' => Auth::id()]) }}"
+            class="inline-block px-4 py-2 bg-indigo-500 text-white font-bold rounded hover:bg-indigo-700">
+                View Filtered Inquiries
+            </a>
+        </div>
         <div class="overflow-x-auto rounded-lg shadow">
             <table class="min-w-full bg-white rounded-lg overflow-hidden">
                 <thead class="bg-gradient-to-r from-blue-400 to-purple-400 text-white sticky top-0 z-10">
@@ -28,12 +36,15 @@
                         <td class="px-4 py-3 text-center">
                             <span class="inline-flex items-center gap-2">
                                 <span class="bg-blue-200 text-blue-800 rounded-full px-3 py-1 text-xs font-bold">
-                                    {{ $inquiry->publicUser ? $inquiry->publicUser->name : 'N/A' }}
+                                    {{ $inquiry->publicUser ? $inquiry->user->name : 'N/A' }}
                                 </span>
                             </span>
                         </td>
                         <td class="px-4 py-3">
                             <div class="font-bold text-blue-700 mb-1">{{ strtoupper($inquiry->NewsTitle) }}</div>
+                            @if($inquiry->InquiryStatus == 'Rejected')
+                                <span class="text-sm text-red-500">(Previously Rejected)</span>
+                            @endif
                             <div class="text-gray-600 text-sm">{{ \Illuminate\Support\Str::limit($inquiry->NewsContent, 80) }}</div>
                         </td>
                         <td class="px-4 py-3 text-center text-gray-600">
@@ -46,34 +57,28 @@
                             </a>
                         </td>
                         <td class="px-4 py-3">
-                            <!-- <form method="POST" action="{{ route('MCMC.AssignInquiry', ['user_id' => Auth::id()]) }}"> -->
-                                @csrf
-                                <input type="hidden" name="inquiry_id" value="{{ $inquiry->id }}">
-                                <select id="select_agency_{{ $inquiry->id }}" class="w-full border border-gray-300 rounded-lg px-2 py-1 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none transition">
-                                    <option value="">-- Select Agency --</option>
-                                    @foreach($agencies as $agency)
-                                        <option value="{{ $agency->id }}" {{ $inquiry->Agency_id == $agency->id ? 'selected' : '' }}>
-                                            {{ strtoupper($agency->name) }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                </td>
-                                <td class="px-4 py-3 text-center">
-                                        <!-- <button type="submit" class="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-1.5 px-5 rounded-lg shadow transition transform hover:scale-105">
-                                            Assign
-                                        </button> -->
-                                        <button type="button"
-                                                onclick="openAssignmentModal('{{ $inquiry->id }}')"
-                                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                            Assign
-                                        </button>
-                                </td>
-                            <!-- </form> -->
+                            @csrf
+                            <input type="hidden" name="inquiry_id" value="{{ $inquiry->id }}">
+                            <select id="select_agency_{{ $inquiry->id }}" class="w-full border border-gray-300 rounded-lg px-2 py-1 text-sm focus:ring-2 focus:ring-blue-400 focus:outline-none transition">
+                                <option value="">-- Select Agency --</option>
+                                @foreach($agencies as $agency)
+                                    <option value="{{ $agency->id }}" {{ $inquiry->Agency_id == $agency->id ? 'selected' : '' }}>
+                                        {{ strtoupper($agency->user->name) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button type="button"
+                                    onclick="openAssignmentModal('{{ $inquiry->id }}')"
+                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                Assign
+                            </button>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="px-4 py-10 text-center text-gray-400 text-lg">
+                        <td colspan="7" class="px-4 py-10 text-center text-gray-400 text-lg">
                             No inquiries available.
                         </td>
                     </tr>
@@ -154,7 +159,6 @@ function openAssignmentModal(inquiryId) {
     document.getElementById('assignmentModal').classList.remove('hidden');
 }
 function closeModal() {
-     // Prevent form submission
     document.getElementById('assignmentModal').classList.add('hidden');
     document.getElementById('assignmentForm').reset();
 }

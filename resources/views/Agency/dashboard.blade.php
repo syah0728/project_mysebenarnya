@@ -1,9 +1,10 @@
 @extends('layouts.dashboard')
 @section('content')
 <div class="py-12">
-    <div class="min-w-full bg-green-50 border border-green-200 rounded-2xl shadow-xl p-8">
+    <div class="bg-gradient-to-tr from-indigo-200 via-purple-300 to-pink-300 rounded-2xl shadow-xl p-8">
+
         <!-- <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-8"> -->
-            <h2 class="text-2xl font-bold mb-6 text-gray-800">Welcome, {{ Auth::user()->name }} (Agency)!</h2>
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">Welcome, {{ $agency->user->name }} (Agency)!</h2>
 
             <!-- Stats Cards -->
             <div class="flex justify-center mb-8">

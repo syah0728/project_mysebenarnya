@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('PublicUser', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->unique()  // Changed from PublicUser_id to user_id
-                ->constrained('user')
+                ->constrained('users')
                 ->onDelete('cascade');
             $table->string('name');
             $table->string('email')->unique();

@@ -105,6 +105,10 @@ Route::middleware([
         Route::get('/inquiry-history', [\App\Http\Controllers\PublicUserController::class, 'inquiryHistory'])->name('InquiryHistory');
         
         Route::get('/inquiry/{inquiry_id}', [\App\Http\Controllers\PublicUserController::class, 'viewInquiry'])->name('inquiry.view');
+        
+        Route::get('/public-inquiry', [\App\Http\Controllers\PublicUserController::class, 'publicInquiry'])
+            ->name('PublicInquiry');
+
     });
     
     });
@@ -142,6 +146,30 @@ Route::middleware([
 
     // Reject Inquiry
     Route::put('/inquiry/{inquiry_id}/reject', [MCMCController::class, 'rejectInquiry'])->name('rejectInquiry');
+
+    Route::get('/user-data', [MCMCController::class, 'UserData'])->name('UserData');
+
+    Route::get('/user-activity/{target_user_id}', [MCMCController::class, 'ViewUserActivity'])->name('ViewUserActivity');
+
+    Route::get('/register-user', [MCMCController::class, 'RegisterUser'])->name('RegisterUser');
+    Route::post('/register-user', [MCMCController::class, 'RegisterUserPost'])->name('RegisterUserPost');
+
+    Route::get('/filtered-inquiries', [MCMCController::class, 'filteredInquiries'])->name('FilteredInquiries');
+
+    Route::get('/inquiry-assign-report', [MCMCController::class, 'InquiryAssignReport'])
+        ->name('InquiryAssignReport');
+
+    Route::get('/inquiry-assign-report/pdf', [MCMCController::class, 'DownloadInquiryReportPDF'])
+        ->name('DownloadInquiryReportPDF');
+
+    Route::get('/inquiry-assign-report/excel', [MCMCController::class, 'DownloadInquiryReportExcel'])
+        ->name('DownloadInquiryReportExcel');
+
+    Route::get('/inquiry-report', [MCMCController::class, 'inquiryReport'])->name('InquiryReport');
+    Route::get('/inquiry-report/pdf', [MCMCController::class, 'downloadInquiryReportPDF'])->name('InquiryReportPDF');
+    Route::get('/inquiry-report/excel', [MCMCController::class, 'downloadInquiryReportExcel'])->name('InquiryReportExcel');
+
+
 });
 
 
@@ -177,5 +205,6 @@ Route::middleware([
 
     Route::get('/inquiry/{inquiry_id}/review', [AgencyController::class, 'inquiryReview'])->name('InquiryReview');
 
+    Route::put('/inquiry/{inquiry_id}/reject', [AgencyController::class, 'rejectInquiry'])->name('RejectInquiry');
 
 });

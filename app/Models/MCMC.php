@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MCMC extends Model
 {
+    protected $table = 'mcmc';
     public function user() {
         return $this->belongsTo(\App\Models\User::class, 'PublicUser_id');
     }
