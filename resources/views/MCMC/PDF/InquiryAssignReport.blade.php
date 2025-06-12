@@ -12,9 +12,9 @@
 </head>
 <body>
     <h2>Inquiry Assignment Report</h2>
-    @if($startDate && $endDate)
+    <!-- @if($startDate && $endDate)
         <p>From: {{ $startDate }} — To: {{ $endDate }}</p>
-    @endif
+    @endif -->
 
     <table>
         <thead>

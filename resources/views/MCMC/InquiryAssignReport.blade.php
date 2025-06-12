@@ -42,12 +42,12 @@
 
         <!-- Download Buttons -->
         <div class="mb-6 text-right">
-            <a href="{{ route('MCMC.DownloadInquiryReportPDF', ['user_id' => Auth::id(), 'start_date' => $startDate, 'end_date' => $endDate, 'agency_id' => $agencyId]) }}"
+            <a href="{{ route('MCMC.DownloadInquiryAssignReportPDF', ['user_id' => Auth::id(), 'start_date' => $startDate, 'end_date' => $endDate, 'agency_id' => $agencyId]) }}"
                 class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded shadow">
                     Download PDF
             </a>
 
-            <a href="{{ route('MCMC.DownloadInquiryReportExcel', ['user_id' => Auth::id(), 'start_date' => $startDate, 'end_date' => $endDate, 'agency_id' => $agencyId]) }}"
+            <a href="{{ route('MCMC.DownloadInquiryAssignReportExcel', ['user_id' => Auth::id(), 'start_date' => $startDate, 'end_date' => $endDate, 'agency_id' => $agencyId]) }}"
                 class="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded shadow">
                     Download Excel
             </a>

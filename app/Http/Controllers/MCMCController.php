@@ -12,6 +12,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\InquiryAssignExport;
+use App\Exports\InquiryExport;
 
 class MCMCController extends Controller
 {
@@ -36,7 +37,8 @@ class MCMCController extends Controller
         $inquiries = Inquiry::with(['publicUser', 'user'])
             ->where(function ($query) {
                 $query->where('InquiryStatus', 'Pending')
-                    ->orWhere('InquiryStatus', 'Rejected'); // ✅ Include rejected
+                    ->orWhere('InquiryStatus', 'Rejected') // ✅ Include rejected
+                    ->orWhere('InquiryStatus', 'Reviewed');
             })
             ->whereNull('Agency_id') // ✅ Ensure it's not currently assigned
             ->orderBy('created_at', 'desc')
@@ -119,7 +121,7 @@ class MCMCController extends Controller
         $this->authorizeUser($user_id);
 
         $validated = $request->validate([
-            'status' => 'required|in:Flagged,Rejected,Discarded',
+            'status' => 'required|in:Reviewed,Discarded',
         ]);
 
         $inquiry = Inquiry::findOrFail($inquiry_id);
@@ -127,7 +129,7 @@ class MCMCController extends Controller
         $inquiry->save();
 
         return redirect()->route('MCMC.InquiryList', ['user_id' => $user_id])
-                        ->with('success', 'Inquiry rejected successfully.');
+                        ->with('success', 'Inquiry reviewed successfully.');
     }
 
     public function UserData($user_id) {
@@ -187,7 +189,7 @@ class MCMCController extends Controller
         $this->authorizeUser($user_id);
 
         $query = Inquiry::with(['publicUser', 'agency'])
-            ->whereIn('InquiryStatus', ['Flagged', 'Discarded']);
+            ->whereIn('InquiryStatus', ['Reviewed', 'Discarded']);
 
         if ($request->filled('date')) {
             $query->whereDate('created_at', $request->date);
@@ -235,7 +237,7 @@ public function InquiryAssignReport(Request $request, $user_id)
     $inquiries = $query->get();
 
     // ✅ Format reportData as array of ['agency' => ..., 'total' => ...]
-    $reportData = $inquiries->groupBy('agency.username')->map(function ($group, $agencyName) {
+    $reportData = $inquiries->groupBy('agency.user.name')->map(function ($group, $agencyName) {
         return [
             'agency' => $agencyName,
             'total' => $group->count(),
@@ -253,7 +255,7 @@ public function InquiryAssignReport(Request $request, $user_id)
     ]);
 }
 
-public function DownloadInquiryReportPDF(Request $request, $user_id)
+public function DownloadInquiryAssignReportPDF(Request $request, $user_id)
 {
     $this->authorizeUser($user_id);
 
@@ -275,7 +277,7 @@ public function DownloadInquiryReportPDF(Request $request, $user_id)
 
     $inquiries = $query->get();
 
-    $reportData = $inquiries->groupBy('agency.username')->map(function ($group, $agencyName) {
+    $reportData = $inquiries->groupBy('agency.user.name')->map(function ($group, $agencyName) {
         return [
             'agency' => $agencyName,
             'total' => $group->count(),
@@ -287,65 +289,113 @@ public function DownloadInquiryReportPDF(Request $request, $user_id)
     return $pdf->download('Inquiry_Assign_Report.pdf');
 }
 
+public function DownloadInquiryAssignReportExcel(Request $request, $user_id)
+{
+    $this->authorizeUser($user_id);
+
+    $from = $request->start_date;
+    $to = $request->end_date;
+    $agencyId = $request->agency_id;
+
+    $query = Inquiry::with('agency.user')->whereNotNull('Agency_id');
+
+    if ($from) {
+        $query->whereDate('created_at', '>=', $from);
+    }
+    if ($to) {
+        $query->whereDate('created_at', '<=', $to);
+    }
+    if ($agencyId) {
+        $query->where('Agency_id', $agencyId);
+    }
+
+    $inquiries = $query->get();
+
+    $reportData = $inquiries->groupBy('agency.user.name')->map(function ($group, $agencyName) {
+        return [
+            'agency' => $agencyName,
+            'total' => $group->count(),
+        ];
+    })->values()->all();
+
+    return Excel::download(new InquiryAssignExport(collect($reportData)), 'inquiry_assign_report.xlsx');
+
+}
+
+
+public function inquiryReport(Request $request, $user_id)
+{
+    $this->authorizeUser($user_id);
+
+    $month = $request->input('month');
+    $year = $request->input('year');
+
+    // Ensure month is an integer
+    $month = is_numeric($month) ? (int) $month : null;
+
+    $query = Inquiry::query();
+
+    if ($month && $year) {
+        $query->whereMonth('created_at', $month)
+              ->whereYear('created_at', $year);
+    } elseif ($year) {
+        $query->whereYear('created_at', $year);
+    }
+
+    $inquiries = $query->get();
+
+    $monthlyCounts = Inquiry::selectRaw('MONTH(created_at) as month, COUNT(*) as total')
+        ->whereYear('created_at', $year ?? now()->year)
+        ->groupBy('month')
+        ->pluck('total', 'month');
+
+    return view('MCMC.InquiryReport', compact('inquiries', 'monthlyCounts', 'month', 'year'));
+}
+
+
+public function DownloadInquiryReportPDF(Request $request, $user_id)
+{
+    $this->authorizeUser($user_id);
+
+    $month = $request->month;
+    $year = $request->year;
+
+    // ✅ Ensure $month is numeric or null
+    $month = is_numeric($month) ? (int) $month : null;
+
+    $query = Inquiry::with('publicUser');
+
+    if ($month && $year) {
+        $query->whereMonth('created_at', $month)
+              ->whereYear('created_at', $year);
+    } elseif ($year) {
+        $query->whereYear('created_at', $year);
+    }
+
+    $inquiries = $query->get();
+
+    $pdf = \PDF::loadView('MCMC.PDF.InquiryReport', [
+        'inquiries' => $inquiries,
+        'month' => $month,
+        'year' => $year
+    ]);
+
+    return $pdf->download('Inquiry_Report.pdf');
+}
+
+
 public function DownloadInquiryReportExcel(Request $request, $user_id)
-    {
-        $this->authorizeUser($user_id);
+{
+    $this->authorizeUser($user_id);
 
-        $from = $request->start_date;
-        $to = $request->end_date;
-        $agencyId = $request->agency_id;
+    $month = $request->input('month');
+    $year = $request->input('year');
 
-        $query = DB::table('inquiry')
-            ->join('agency', 'inquiry.Agency_id', '=', 'agency.id')
-            ->select('agency.username as agency', DB::raw('count(*) as total'))
-            ->whereNotNull('inquiry.Agency_id')
-            ->groupBy('agency.username');
+    // ✅ Sanitize month input
+    $month = is_numeric($month) ? (int) $month : null;
 
-        if ($from && $to) {
-            $query->whereBetween('inquiry.created_at', [$from, $to]);
-        }
+    return Excel::download(new InquiryExport($month, $year), 'Inquiry_Report.xlsx');
+}
 
-        if ($agencyId) {
-            $query->where('agency.id', $agencyId);
-        }
-
-        $data = $query->get();
-
-        return Excel::download(new InquiryAssignExport($data), 'inquiry_assign_report.xlsx');
-    }
-
-
-    public function inquiryReport(Request $request, $user_id)
-    {
-        $this->authorizeUser($user_id);
-
-        $month = $request->input('month');
-        $year = $request->input('year');
-
-        $query = Inquiry::query();
-
-        if ($month) {
-            $query->whereMonth('created_at', $month);
-        }
-
-        if ($year) {
-            $query->whereYear('created_at', $year);
-        }
-
-        $inquiries = $query->get();
-
-        $monthlyCounts = $inquiries->groupBy(function ($q) {
-            return $q->created_at->format('F');
-        })->map(function ($group) {
-            return $group->count();
-        });
-
-        return view('MCMC.InquiryReport', [
-            'inquiries' => $inquiries,
-            'monthlyCounts' => $monthlyCounts,
-            'month' => $month,
-            'year' => $year,
-        ]);
-    }
 
 }

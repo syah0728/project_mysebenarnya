@@ -51,6 +51,7 @@ Route::middleware([
     // User Logout
     Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 
+    // Public User Routes Group
     Route::prefix('PublicUser/{user_id}')->name('PublicUser.')->group(function () {
         Route::get('/dashboard', function ($user_id) {
             if (!auth()->user()->isPublicUser() || auth()->id() != $user_id) {
@@ -58,14 +59,6 @@ Route::middleware([
             }
             return view('PublicUser.dashboard');
         })->name('dashboard');
-
-        // Add this for the profile page
-        Route::get('/profile', function ($user_id) {
-            if (!auth()->user()->isPublicUser() || auth()->id() != $user_id) {
-                abort(403, 'Unauthorized action.');
-            }
-            return view('PublicUser.profile');
-        })->name('profile');
 
         // Add this for the inquiry form if not already defined
         Route::get('/inquiry-form', function ($user_id) {
@@ -106,10 +99,12 @@ Route::middleware([
         
         Route::get('/inquiry/{inquiry_id}', [\App\Http\Controllers\PublicUserController::class, 'viewInquiry'])->name('inquiry.view');
         
-        Route::get('/public-inquiry', [\App\Http\Controllers\PublicUserController::class, 'publicInquiry'])
-            ->name('PublicInquiry');
+        Route::get('/public-inquiry', [\App\Http\Controllers\PublicUserController::class, 'publicInquiry'])->name('PublicInquiry');
 
-    });
+        Route::get('/profile', [PublicUserController::class, 'showProfile'])->name('profile');
+        Route::post('/profile/update', [PublicUserController::class, 'updateProfile'])->name('updateProfile');
+        Route::post('/profile/password', [PublicUserController::class, 'changePassword'])->name('changePassword');
+        });
     
     });
 
@@ -159,15 +154,18 @@ Route::middleware([
     Route::get('/inquiry-assign-report', [MCMCController::class, 'InquiryAssignReport'])
         ->name('InquiryAssignReport');
 
-    Route::get('/inquiry-assign-report/pdf', [MCMCController::class, 'DownloadInquiryReportPDF'])
-        ->name('DownloadInquiryReportPDF');
+    Route::get('/inquiry-assign-report/pdf', [MCMCController::class, 'DownloadInquiryAssignReportPDF'])
+        ->name('DownloadInquiryAssignReportPDF');
 
-    Route::get('/inquiry-assign-report/excel', [MCMCController::class, 'DownloadInquiryReportExcel'])
-        ->name('DownloadInquiryReportExcel');
+    Route::get('/inquiry-assign-report/excel', [MCMCController::class, 'DownloadInquiryAssignReportExcel'])
+        ->name('DownloadInquiryAssignReportExcel');
 
     Route::get('/inquiry-report', [MCMCController::class, 'inquiryReport'])->name('InquiryReport');
-    Route::get('/inquiry-report/pdf', [MCMCController::class, 'downloadInquiryReportPDF'])->name('InquiryReportPDF');
-    Route::get('/inquiry-report/excel', [MCMCController::class, 'downloadInquiryReportExcel'])->name('InquiryReportExcel');
+
+    Route::get('/inquiry-report/pdf', [MCMCController::class, 'DownloadInquiryReportPDF'])->name('DownloadInquiryReportPDF');
+
+    Route::get('/inquiry-report/excel', [MCMCController::class, 'DownloadInquiryReportExcel'])->name('DownloadInquiryReportExcel');
+
 
 
 });

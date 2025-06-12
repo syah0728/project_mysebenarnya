@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -66,6 +67,17 @@ class User extends Authenticatable
         ];
     }
 
+    public function updatePassword($currentPassword, $newPassword)
+    {
+        if (!Hash::check($currentPassword, $this->password)) {
+            return false;
+        }
+
+        $this->password = Hash::make($newPassword);
+        $this->save();
+
+        return true;
+    }
     // Add relationships
     public function PublicUser()
     {

@@ -1,7 +1,7 @@
 @extends('layouts.dashboard')
 @section('content')
-<div class="py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+<div class="py-12 ">
+  <div class="bg-gradient-to-tr from-cyan-200 via-blue-300 to-emerald-300 rounded-3xl shadow-2xl p-10">
         <div class="bg-gradient-to-tr from-cyan-200 via-blue-300 to-emerald-300 rounded-2xl shadow-xl p-8">
             <h2 class="text-2xl font-bold mb-6 text-gray-800">Welcome, {{ Auth::user()->name }}!</h2>
 

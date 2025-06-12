@@ -44,6 +44,8 @@
                             <div class="font-bold text-blue-700 mb-1">{{ strtoupper($inquiry->NewsTitle) }}</div>
                             @if($inquiry->InquiryStatus == 'Rejected')
                                 <span class="text-sm text-red-500">(Previously Rejected)</span>
+                                @elseif($inquiry->InquiryStatus == 'Reviewed')
+                                <span class="text-sm text-green-500">(Previously Reviewed)</span>
                             @endif
                             <div class="text-gray-600 text-sm">{{ \Illuminate\Support\Str::limit($inquiry->NewsContent, 80) }}</div>
                         </td>
@@ -85,7 +87,15 @@
                     @endforelse
                 </tbody>
             </table>
+            
         </div>
+          <div class="flex justify-end mt-6">
+                <a href="{{ route('MCMC.InquiryReport', ['user_id' => Auth::id()]) }}"
+                class="inline-block px-4 py-2 bg-indigo-500 text-white font-bold rounded hover:bg-indigo-700">
+                    Generate Inquiry Report
+                </a>
+            </div>
+
     </div>
 </div>
 <!-- Assignment Modal -->
@@ -137,6 +147,8 @@
                     </button>
                 </div>
             </form>
+
+          
         </div>
     </div>
 </div>

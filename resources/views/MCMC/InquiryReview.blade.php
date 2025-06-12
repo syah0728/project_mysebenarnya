@@ -44,10 +44,10 @@
             <form method="POST" action="{{ route('MCMC.rejectInquiry', ['user_id' => auth()->id(), 'inquiry_id' => $inquiry->id]) }}">
                 @csrf
                 @method('PUT')
-                <label for="status" class="block mb-2 font-medium text-gray-700">Update Inquiry Status:</label>
+                <label for="status" class="block mb-2 font-medium text-gray-700">Filter Inquiry Status:</label>
                 <select name="status" id="status" required class="block w-full mb-4 border-gray-300 rounded-md shadow-sm">
                     <option value="">-- Select Status --</option>
-                    <option value="Flagged">Flagged</option>
+                    <option value="Reviewed">Reviewed</option>
                     <!-- <option value="Rejected">Rejected</option> -->
                     <option value="Discarded">Discarded</option>
                 </select>
