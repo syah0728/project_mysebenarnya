@@ -5,6 +5,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use App\Models\MCMC;
+use App\Models\Agency;
 
 class LoginController extends Controller
 {
@@ -15,43 +18,59 @@ class LoginController extends Controller
     }
 
     //To authenticate the user and redirect to the appropriate dashboard
-    public function login(Request $request)
-    {
-        //Validate the request to ensure the email, password and role are present
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-            'role' => ['required', 'in:PublicUser,MCMC,Agency'],
+public function login(Request $request)
+{
+    $role = $request->input('role');
+
+    if ($role === 'PublicUser') {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
         ]);
 
-        // Get role from request
-        $role = $request->role;
-
-        // Attempt to authenticate
-        if (Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
-            // Check if authenticated user's role matches selected role
-            if (Auth::user()->role !== $role) {
-                Auth::logout();
-                return back()
-                    ->withInput($request->only('email'))
-                    ->withErrors([
-                        'role' => 'The selected role does not match your account type.'
-                    ]);
-            }
-
-            $request->session()->regenerate();
-
-            // Redirect based on role
-            return redirect()->intended($this->redirectTo());
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'role' => 'PublicUser'])) {
+            return redirect()->route('PublicUser.dashboard', ['user_id' => Auth::id()]);
         }
 
-        //If the authentication fails, redirect back to the login page with the email and an error message
-        return back()
-            ->withInput($request->only('email'))
-            ->withErrors([
-                'email' => 'The provided credentials do not match our records.',
-            ]);
+    } elseif ($role === 'MCMC') {
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+
+        $mcmc = MCMC::where('username', $request->username)->first();
+
+        if ($mcmc && $mcmc->user) {
+            $user = $mcmc->user;
+            if (
+                $user->role === 'MCMC' &&
+                Auth::attempt(['email' => $user->email, 'password' => $request->password])
+            ) {
+                return redirect()->route('MCMC.dashboard', ['user_id' => $user->id]);
+            }
+        }
+
+    } elseif ($role === 'Agency') {
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+
+        $agency = Agency::where('username', $request->username)->first();
+
+        if ($agency && $agency->user) {
+            $user = $agency->user;
+            if (
+                $user->role === 'Agency' &&
+                Auth::attempt(['email' => $user->email, 'password' => $request->password])
+            ) {
+                return redirect()->route('Agency.dashboard', ['user_id' => $user->id]);
+            }
+        }
     }
+
+    return back()->with('error', 'Invalid credentials or role.');
+}
 
     //To redirect the user to the appropriate dashboard based on their role
     protected function redirectTo()

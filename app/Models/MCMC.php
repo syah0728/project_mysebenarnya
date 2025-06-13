@@ -2,12 +2,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class MCMC extends Model
 {
     protected $table = 'mcmc';
     public function user() {
-        return $this->belongsTo(\App\Models\User::class, 'PublicUser_id');
+        return $this->belongsTo(User::class);
     }
 
     public function agency() {

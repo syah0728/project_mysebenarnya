@@ -78,6 +78,29 @@ class User extends Authenticatable
 
         return true;
     }
+
+    public function changePassword(Request $request, $user_id)
+    {
+        $this->authorizeUser($user_id); // Make sure the right user is authorized
+
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = auth()->user(); // This should point to the correct User model
+
+        // Check current password
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Current password is incorrect.']);
+        }
+
+        // Hash and save the new password
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return back()->with('success', 'Password updated successfully.');
+    }
     // Add relationships
     public function PublicUser()
     {

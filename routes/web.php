@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\UserRegisterController;
 use App\Http\Controllers\MCMCController;
 use App\Http\Controllers\AgencyController;
+use App\Http\Controllers\NewPasswordController;
 
 // Welcome Page Route
 Route::get('/', function () {
@@ -25,6 +26,10 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [UserRegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [UserRegisterController::class, 'register']);
 });
+
+//Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+//Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.update');
+
 
 // Protected Routes
 Route::middleware([
