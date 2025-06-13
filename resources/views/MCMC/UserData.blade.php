@@ -60,6 +60,12 @@
                 </tbody>
             </table>
         </div>
+        <div class="flex justify-end mt-6">
+            <a href="{{ route('MCMC.UserReport', ['user_id' => Auth::id()]) }}"
+            class="inline-block px-4 py-2 bg-indigo-500 text-white font-bold rounded hover:bg-indigo-700">
+                Generate User Report
+            </a>
+        </div>
     </div>
 </div>
 @endsection

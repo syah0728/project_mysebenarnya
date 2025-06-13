@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\InquiryAssignExport;
 use App\Exports\InquiryExport;
+use App\Exports\UsersExport;
 
 class MCMCController extends Controller
 {
@@ -397,5 +398,86 @@ public function DownloadInquiryReportExcel(Request $request, $user_id)
     return Excel::download(new InquiryExport($month, $year), 'Inquiry_Report.xlsx');
 }
 
+public function generateUserReport(Request $request)
+{
+    $agencies = Agency::with('user')->get();
 
+    $query = User::query();
+
+    // Filters
+    if ($request->filled('start_date')) {
+        $query->whereDate('created_at', '>=', $request->start_date);
+    }
+
+    if ($request->filled('end_date')) {
+        $query->whereDate('created_at', '<=', $request->end_date);
+    }
+
+    if ($request->filled('role')) {
+        $query->where('role', $request->role);
+    }
+
+    if ($request->filled('agency_id')) {
+        $agencyUserIDs = Agency::where('id', $request->agency_id)
+                               ->with('user')
+                               ->get()
+                               ->pluck('user.id');
+        $query->whereIn('id', $agencyUserIDs);
+    }
+
+    $users = $query->get();
+
+    return view('MCMC.UserReport', compact('users', 'agencies'));
+}
+
+// Export filtered users as Excel
+public function DownloadUserReportExcel(Request $request, $user_id)
+{
+    $this->authorizeUser($user_id);
+
+    $startDate = $request->input('start_date');
+    $endDate   = $request->input('end_date');
+    $role      = $request->input('role');
+    $agencyId  = $request->input('agency_id');
+
+    return Excel::download(new UsersExport($startDate, $endDate, $role, $agencyId), 'User_Report.xlsx');
+}
+
+
+
+// Export filtered users as PDF
+public function DownloadUserReportPDF(Request $request, $user_id)
+{
+    $users = $this->getFilteredUsers($request);
+    $agencies = Agency::with('user')->get();
+    $pdf = Pdf::loadView('MCMC.PDF.UserReport', compact('users', 'agencies'));
+
+    // return $pdf->download('user_report.pdf');
+}
+// Helper function to filter users
+private function getFilteredUsers(Request $request)
+{
+    $query = User::query();
+
+    if ($request->filled('start_date')) {
+        $query->whereDate('created_at', '>=', $request->start_date);
+    }
+
+    if ($request->filled('end_date')) {
+        $query->whereDate('created_at', '<=', $request->end_date);
+    }
+
+    if ($request->filled('role')) {
+        $query->where('role', $request->role);
+    }
+
+    if ($request->filled('agency_id')) {
+        $agency = Agency::find($request->agency_id);
+        if ($agency && $agency->user) {
+            $query->where('id', $agency->user->id);
+        }
+    }
+
+    return $query->get();
+}
 }

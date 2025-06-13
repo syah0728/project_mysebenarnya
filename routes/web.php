@@ -155,7 +155,7 @@ Route::middleware([
     Route::post('/register-user', [MCMCController::class, 'RegisterUserPost'])->name('RegisterUserPost');
 
     Route::get('/filtered-inquiries', [MCMCController::class, 'filteredInquiries'])->name('FilteredInquiries');
-
+    // Inquiry Assign Report
     Route::get('/inquiry-assign-report', [MCMCController::class, 'InquiryAssignReport'])
         ->name('InquiryAssignReport');
 
@@ -164,14 +164,18 @@ Route::middleware([
 
     Route::get('/inquiry-assign-report/excel', [MCMCController::class, 'DownloadInquiryAssignReportExcel'])
         ->name('DownloadInquiryAssignReportExcel');
-
+    // Inquiry Report
     Route::get('/inquiry-report', [MCMCController::class, 'inquiryReport'])->name('InquiryReport');
 
     Route::get('/inquiry-report/pdf', [MCMCController::class, 'DownloadInquiryReportPDF'])->name('DownloadInquiryReportPDF');
 
     Route::get('/inquiry-report/excel', [MCMCController::class, 'DownloadInquiryReportExcel'])->name('DownloadInquiryReportExcel');
+    // User Report
+    Route::get('/user-report', [MCMCController::class, 'generateUserReport'])->name('UserReport');
 
+    Route::get('/user-report/pdf', [MCMCController::class, 'downloadUserReportPDF'])->name('DownloadUserReportPDF');
 
+    Route::get('/user-report/excel', [MCMCController::class, 'downloadUserReportExcel'])->name('DownloadUserReportExcel');
 
 });
 

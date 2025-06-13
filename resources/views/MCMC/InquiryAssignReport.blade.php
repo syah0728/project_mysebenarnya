@@ -41,7 +41,7 @@
         </div>
 
         <!-- Download Buttons -->
-        <div class="mb-6 text-right">
+        <div class="flex justify-end gap-4 mb-6">
             <a href="{{ route('MCMC.DownloadInquiryAssignReportPDF', ['user_id' => Auth::id(), 'start_date' => $startDate, 'end_date' => $endDate, 'agency_id' => $agencyId]) }}"
                 class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded shadow">
                     Download PDF

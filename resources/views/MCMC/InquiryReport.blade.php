@@ -39,7 +39,7 @@
         <canvas id="inquiryChart" height="100"></canvas>
 
         <!-- Download Buttons -->
-        <div class="mb-6 text-right">
+        <div class="flex justify-end gap-4 mb-6">
             <a href="{{ route('MCMC.DownloadInquiryReportPDF', [
                 'user_id' => Auth::id(),
                 'month' => request('month'),
