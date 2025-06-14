@@ -201,4 +201,9 @@ class Inquiry extends Model
         return $this->hasMany(Attachment::class); // Adjust as needed
     }
 
+public function latestProgress()
+{
+    return $this->hasOne(Progress::class)->latestOfMany();
+}
+
 }

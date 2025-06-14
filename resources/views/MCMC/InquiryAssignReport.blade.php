@@ -35,23 +35,21 @@
             </div>
         </form>
 
-        <!-- Chart -->
-        <div class="mb-6">
-            <canvas id="inquiryChart" height="100"></canvas>
-        </div>
-
-        <!-- Download Buttons -->
         <div class="flex justify-end gap-4 mb-6">
             <a href="{{ route('MCMC.DownloadInquiryAssignReportPDF', ['user_id' => Auth::id(), 'start_date' => $startDate, 'end_date' => $endDate, 'agency_id' => $agencyId]) }}"
-                class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded shadow">
-                    Download PDF
+                class="text-sm bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800">
+                Download PDF
             </a>
 
             <a href="{{ route('MCMC.DownloadInquiryAssignReportExcel', ['user_id' => Auth::id(), 'start_date' => $startDate, 'end_date' => $endDate, 'agency_id' => $agencyId]) }}"
-                class="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded shadow">
-                    Download Excel
+                
+                class="text-sm bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800">
+                Download Excel
             </a>
-
+        </div>
+        <!-- Chart -->
+        <div class="mb-6">
+            <canvas id="inquiryChart" height="100"></canvas>
         </div>
 
         <!-- Data Table -->

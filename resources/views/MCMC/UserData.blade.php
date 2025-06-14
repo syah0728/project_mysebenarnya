@@ -62,8 +62,8 @@
         </div>
         <div class="flex justify-end mt-6">
             <a href="{{ route('MCMC.UserReport', ['user_id' => Auth::id()]) }}"
-            class="inline-block px-4 py-2 bg-indigo-500 text-white font-bold rounded hover:bg-indigo-700">
-                Generate User Report
+            class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow">
+                📈 View User Report
             </a>
         </div>
     </div>

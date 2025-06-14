@@ -75,6 +75,13 @@
             class="mt-6 inline-block text-blue-600 hover:underline">
                 ← Back to Inquiry List
         </a>
+
+        <div class="flex justify-end gap-4 mb-6">
+            <a href="{{ route('Agency.VerifyInquiry',['user_id' => Auth::id(), 'inquiry_id' => $inquiry->id]) }}"
+                class="inline-block px-4 py-2 bg-indigo-500 text-white font-bold rounded hover:bg-indigo-700">
+                    Verify Inquiry
+            </a>
+</div>
         
     </div>
 </div>

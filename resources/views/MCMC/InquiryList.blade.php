@@ -36,7 +36,7 @@
                         <td class="px-4 py-3 text-center">
                             <span class="inline-flex items-center gap-2">
                                 <span class="bg-blue-200 text-blue-800 rounded-full px-3 py-1 text-xs font-bold">
-                                    {{ $inquiry->publicUser ? $inquiry->user->name : 'N/A' }}
+                                    {{ $inquiry->publicUser ? $inquiry->publicUser->name : 'N/A' }}
                                 </span>
                             </span>
                         </td>
@@ -91,8 +91,8 @@
         </div>
           <div class="flex justify-end mt-6">
                 <a href="{{ route('MCMC.InquiryReport', ['user_id' => Auth::id()]) }}"
-                class="inline-block px-4 py-2 bg-indigo-500 text-white font-bold rounded hover:bg-indigo-700">
-                    Generate Inquiry Report
+                class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow">
+                📈 View Inquiry Report
                 </a>
             </div>
 

@@ -86,13 +86,6 @@
                                 aria-current="{{ request()->routeIs('MCMC.dashboard') ? 'page' : '' }}">
                                     Dashboard
                                 </a>
-
-                                <!-- <a href="{{ route('MCMC.profile', ['user_id' => Auth::id()]) }}"
-                                class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5
-                                {{ request()->routeIs('MCMC.profile') ? 'border-blue-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}"
-                                aria-current="{{ request()->routeIs('MCMC.profile') ? 'page' : '' }}">
-                                    Profile
-                                </a> -->
                                 <a href="{{ route('MCMC.UserData', ['user_id' => Auth::id()]) }}"
                                 class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5
                                 {{ request()->routeIs('MCMC.UserData') ? 'border-blue-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}"
@@ -110,6 +103,12 @@
                                 {{ request()->routeIs('MCMC.AssignedInquiry') ? 'border-blue-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}"
                                 aria-current="{{ request()->routeIs('MCMC.AssignedInquiry') ? 'page' : '' }}">
                                     Assigned Inquiry
+                                </a>
+                                <a href="{{ route('MCMC.InquiryProgress', ['user_id' => Auth::id()]) }}"
+                                class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5
+                                {{ request()->routeIs('MCMC.InquiryProgress') ? 'border-blue-500 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}"
+                                aria-current="{{ request()->routeIs('MCMC.InquiryProgress') ? 'page' : '' }}">
+                                    Inquiry Progress
                                 </a>
 
                                 </div>

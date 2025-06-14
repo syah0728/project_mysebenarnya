@@ -113,17 +113,10 @@ Route::middleware([
     
     });
 
-    // MCMC Routes Group
-    Route::prefix('MCMC/{user_id}')->name('MCMC.')->group(function () {
+// MCMC Routes Group
+Route::prefix('MCMC/{user_id}')->name('MCMC.')->group(function () {
 
     Route::get('/dashboard', [MCMCController::class, 'dashboard'])->name('dashboard');
-
-    Route::get('/profile', function ($user_id) {
-        if (!auth()->user()->isMCMC() || auth()->id() != $user_id) {
-            abort(403, 'Unauthorized action.');
-        }
-        return view('MCMC.profile');
-    })->name('profile');
 
     Route::get('/user-data', function ($user_id) {
         if (!auth()->user()->isMCMC() || auth()->id() != $user_id) {
@@ -131,6 +124,9 @@ Route::middleware([
         }
         return view('MCMC.UserData');
     })->name('UserData');
+
+    Route::get('/inquiry-progress', [MCMCController::class, 'inquiryProgress'])->name('InquiryProgress');
+
 
     // Inquiry List
     Route::get('/inquiry', [MCMCController::class, 'inquiryList'])->name('InquiryList');
@@ -177,26 +173,18 @@ Route::middleware([
 
     Route::get('/user-report/excel', [MCMCController::class, 'downloadUserReportExcel'])->name('DownloadUserReportExcel');
 
+    Route::get('/agency-performance-report', [MCMCController::class, 'agencyPerformanceReport'])->name('AgencyPerfReport');
+
+    Route::get('/agency-performance-report/pdf', [MCMCController::class, 'DownloadPerfReportPDF'])->name('DownloadPerfReportPDF');
+    Route::get('/agency-performance-report/excel', [MCMCController::class, 'DownloadPerfReportExcel'])->name('DownloadPerfReportExcel');
+
 });
 
-
-
-
-
-    // Agency Routes Group
-    Route::prefix('Agency/{user_id}')->name('Agency.')->group(function () {
+// Agency Routes Group
+Route::prefix('Agency/{user_id}')->name('Agency.')->group(function () {
     // Dashboard
     Route::get('/dashboard', [AgencyController::class, 'dashboard'])->name('dashboard');
     
-
-    // Profile
-    Route::get('/profile', function ($user_id) {
-        if (!auth()->user()->isAgency() || auth()->id() != $user_id) {
-            abort(403, 'Unauthorized action.');
-        }
-        return view('Agency.profile');
-    })->name('profile');
-
     // View single inquiry details
     Route::get('/inquiry/{inquiry_id}', [AgencyController::class, 'viewInquiry'])->name('viewInquiry');
     // Inquiry History
@@ -213,5 +201,14 @@ Route::middleware([
     Route::get('/inquiry/{inquiry_id}/review', [AgencyController::class, 'inquiryReview'])->name('InquiryReview');
 
     Route::put('/inquiry/{inquiry_id}/reject', [AgencyController::class, 'rejectInquiry'])->name('RejectInquiry');
+
+    Route::get('/profile', [AgencyController::class, 'showProfile'])->name('profile');
+    Route::post('/profile/update', [AgencyController::class, 'updateProfile'])->name('updateProfile');
+    Route::post('/profile/password', [AgencyController::class, 'changePassword'])->name('changePassword');
+
+    // Show the form to verify an inquiry
+    Route::get('/inquiry/{inquiry_id}/verify-inquiry', [AgencyController::class, 'verifyInquiry'])->name('VerifyInquiry');
+
+    Route::post('/inquiry/{inquiry_id}/verify', [AgencyController::class, 'submitVerification'])->name('SubmitVerification');
 
 });

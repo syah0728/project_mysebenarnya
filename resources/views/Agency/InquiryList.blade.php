@@ -17,6 +17,7 @@
                         <th class="px-4 py-3 text-center font-semibold">Sender Name</th>
                         <th class="px-4 py-3 text-center font-semibold">Inquiry</th>
                         <th class="px-4 py-3 text-center font-semibold">Date</th>
+                        <th class="px-4 py-3 text-center font-semibold">Progress Status</th>
                         <th class="px-4 py-3 text-center font-semibold">Review</th>
                     </tr>
                 </thead>
@@ -38,6 +39,19 @@
                         <td class="px-4 py-3 text-center text-gray-600">
                             {{ \Carbon\Carbon::parse($inquiry->created_at)->format('d M Y') }}
                         </td>
+                        <td class="px-4 py-3 text-center">
+                            @if($inquiry->latestProgress)
+                                <span class="inline-block px-3 py-1 rounded-full text-xs font-bold
+                                    {{ $inquiry->latestProgress->ProgressStatus === 'Verified as True' ? 'bg-green-200 text-green-800' :
+                                        ($inquiry->latestProgress->ProgressStatus === 'Identified as Fake' ? 'bg-red-200 text-red-800' :
+                                        'bg-yellow-200 text-yellow-800') }}">
+                                    {{ $inquiry->latestProgress->ProgressStatus }}
+                                </span>
+                            @else
+                                <span class="text-gray-400 italic text-sm">Pending</span>
+                            @endif
+                        </td>
+
                         <td>
                             <a href="{{ route('Agency.InquiryReview', ['user_id' => $user->id, 'inquiry_id' => $inquiry->id]) }}"
                                 class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
