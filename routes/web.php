@@ -109,6 +109,9 @@ Route::middleware([
         Route::get('/profile', [PublicUserController::class, 'showProfile'])->name('profile');
         Route::post('/profile/update', [PublicUserController::class, 'updateProfile'])->name('updateProfile');
         Route::post('/profile/password', [PublicUserController::class, 'changePassword'])->name('changePassword');
+
+        Route::get('/inquiry-progress', [PublicUserController::class, 'inquiryProgress'])
+         ->name('InquiryProgress');
         });
     
     });
@@ -210,5 +213,9 @@ Route::prefix('Agency/{user_id}')->name('Agency.')->group(function () {
     Route::get('/inquiry/{inquiry_id}/verify-inquiry', [AgencyController::class, 'verifyInquiry'])->name('VerifyInquiry');
 
     Route::post('/inquiry/{inquiry_id}/verify', [AgencyController::class, 'submitVerification'])->name('SubmitVerification');
+
+    Route::get('/inquiry-history', [AgencyController::class, 'inquiryHistoryList'])->name('InquiryHistory');
+
+    Route::get('/inquiry-history/{inquiry_id}', [AgencyController::class, 'viewInquiryHistory'])->name('ViewInquiryDetails');
 
 });

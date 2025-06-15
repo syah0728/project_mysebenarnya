@@ -12,8 +12,8 @@
                     <div class="text-gray-700">Total Inquiries</div>
                 </div>
                 <div class="bg-yellow-100 p-6 rounded-lg shadow text-center">
-                    <div class="text-3xl font-bold text-yellow-600 mb-2">{{ $pending }}</div>
-                    <div class="text-gray-700">Pending</div>
+                    <div class="text-3xl font-bold text-yellow-600 mb-2">{{ $assigned }}</div>
+                    <div class="text-gray-700">Assigned</div>
                 </div>
                 <div class="bg-orange-100 p-6 rounded-lg shadow text-center">
                     <div class="text-3xl font-bold text-orange-600 mb-2">{{ $inProgress }}</div>

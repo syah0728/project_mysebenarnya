@@ -64,12 +64,12 @@ class Inquiry extends Model
         }
 
         $total = Inquiry::countByUser($user->id);
-        $pending = Inquiry::countByStatus($user->id, 'Pending');
+        $assigned = Inquiry::countByStatus($user->id, 'Assigned');
         $inProgress = Inquiry::countByStatus($user->id, 'In Progress');
         $resolved = Inquiry::countByStatus($user->id, 'Resolved');
         $recent = Inquiry::recentByUser($user->id, 5);
 
-        return view('PublicUser.dashboard', compact('total', 'pending', 'inProgress', 'resolved', 'recent'));
+        return view('PublicUser.dashboard', compact('total', 'assigned', 'pending', 'inProgress', 'resolved', 'recent'));
     }
 
 
@@ -206,4 +206,8 @@ public function latestProgress()
     return $this->hasOne(Progress::class)->latestOfMany();
 }
 
+public function assignment()
+{
+    return $this->hasOne(Assignment::class, 'Inquiry_id');
+}
 }

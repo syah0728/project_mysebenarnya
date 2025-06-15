@@ -108,7 +108,6 @@ class PublicUserController extends Controller
             ->with('success', 'Inquiry submitted successfully!');
     }
     //display the inquiry history for a public user
-    
     public function inquiryHistory($user_id)
     {
         // Check if user is authenticated and authorized
@@ -124,7 +123,8 @@ class PublicUserController extends Controller
         }
 
         // Get all inquiries for this public user
-        $inquiries = Inquiry::where('PublicUser_id', $publicUser->id)
+        $inquiries = Inquiry::with(['agency', 'assignment'])
+                        ->where('PublicUser_id', $publicUser->id)
                         ->orderBy('InquiryDate', 'desc')
                         ->get();
 
@@ -149,22 +149,33 @@ class PublicUserController extends Controller
     
 
     // Display the dashboard for a public user
-    public function dashboard($user_id)
-    {
-        $user = auth()->user();
+public function dashboard($user_id)
+{
+    $user = auth()->user();
 
-        if (!$user || $user->id != $user_id || !$user->isPublicUser()) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $total = Inquiry::countByUser($user->id);
-        $pending = Inquiry::countByStatus($user->id, 'Pending');
-        $inProgress = Inquiry::countByStatus($user->id, 'In Progress');
-        $resolved = Inquiry::countByStatus($user->id, 'Resolved');
-        $recent = Inquiry::recentByUser($user->id, 5);
-
-        return view('PublicUser.dashboard', compact('total', 'pending', 'inProgress', 'resolved', 'recent'));
+    if (!$user || $user->id != $user_id || !$user->isPublicUser()) {
+        abort(403, 'Unauthorized action.');
     }
+
+    $publicUser = PublicUser::where('user_id', $user->id)->first();
+
+    if (!$publicUser) {
+        abort(404, 'Public user not found.');
+    }
+
+    $total = Inquiry::where('PublicUser_id', $publicUser->id)->count();
+    $pending = Inquiry::where('PublicUser_id', $publicUser->id)->where('InquiryStatus', 'Pending')->count();
+    $inProgress = Inquiry::where('PublicUser_id', $publicUser->id)->where('InquiryStatus', 'In Progress')->count();
+    $resolved = Inquiry::where('PublicUser_id', $publicUser->id)->where('InquiryStatus', 'Resolved')->count();
+
+    $recent = Inquiry::where('PublicUser_id', $publicUser->id)
+        ->latest()
+        ->take(5)
+        ->get();
+
+    return view('PublicUser.dashboard', compact('total', 'pending', 'inProgress', 'resolved', 'recent'));
+}
+
 
     public function publicInquiry($user_id)
     {
@@ -172,12 +183,36 @@ class PublicUserController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        $inquiries = \App\Models\Inquiry::where('InquiryStatus', 'Verified')
+        $inquiries = Inquiry::where('InquiryStatus', 'Verified')
                         ->orderBy('created_at', 'desc')
                         ->get();
 
         return view('PublicUser.PublicInquiry', compact('inquiries'));
     }
+
+public function inquiryProgress(Request $request)
+{
+    $user = auth()->user();
+    $publicUser = PublicUser::where('user_id', $user->id)->firstOrFail();
+
+    $query = Inquiry::with(['progressUpdates', 'agency.user'])
+        ->where('PublicUser_id', $publicUser->id);
+
+    // Search by title
+    if ($request->filled('search')) {
+        $query->where('NewsTitle', 'like', '%' . $request->search . '%');
+    }
+
+    // Filter by status
+    if ($request->filled('status')) {
+        $query->where('InquiryStatus', $request->status);
+    }
+
+    $inquiries = $query->orderBy('created_at', 'desc')->get();
+
+    return view('PublicUser.InquiryProgress', compact('inquiries'));
+}
+
 
 
     }

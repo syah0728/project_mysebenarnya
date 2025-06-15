@@ -41,11 +41,11 @@
             <input type="email" name="email" id="email" class="w-full border-black border rounded px-3 py-2" required>
         </div>
 
-        <!-- Password -->
+        <!-- Password
         <div class="mb-4">
             <label for="password" class="block text-gray-700 font-bold mb-2">Password</label>
             <input type="password" name="password" id="password" class="w-full border-black border rounded px-3 py-2" required>
-        </div>
+        </div> -->
 
         <!-- Username for Agency -->
         <div class="mb-4">
@@ -58,6 +58,10 @@
             <label for="phone" class="block text-gray-700 font-bold mb-2">Phone Number</label>
             <input type="text" name="phone" id="phone" class="w-full border-black border rounded px-3 py-2" required>
         </div>
+        <p class="text-sm text-gray-600 mt-2">
+    A temporary password will be emailed to the agency user after registration.
+</p>
+
 
 
             <div class="flex justify-end">

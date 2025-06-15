@@ -30,4 +30,7 @@ class PublicUser extends Model
         return $this->hasMany(Inquiry::class, 'PublicUser_id');
     }
 
+
+
+
 }

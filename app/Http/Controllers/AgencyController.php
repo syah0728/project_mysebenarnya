@@ -10,6 +10,7 @@ use App\Models\Assignment;
 use App\Models\User;
 use App\Models\Progress;
 use App\Mail\InquiryRejectedMail;
+use App\Mail\InquiryProgressMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 
@@ -233,7 +234,7 @@ public function submitVerification(Request $request, $user_id, $inquiry_id)
     ]);
 
     // Log into progress
-    $inquiry->progressUpdates()->create([
+    $progressUpdate = $inquiry->progressUpdates()->create([
         'UpdateDate' => now()->toDateString(),
         'ProgressStatus' => $request->verification_status,
         'ProgressDescription' => $request->description,
@@ -243,7 +244,41 @@ public function submitVerification(Request $request, $user_id, $inquiry_id)
         'updated_at' => now(),
     ]);
 
+    // Send email to public user
+    $publicUserEmail = $inquiry->publicUser->user->email ?? null;
+    if ($publicUserEmail) {
+        Mail::to($publicUserEmail)->send(new InquiryProgressMail($progressUpdate)); 
+    }
+
+
     return redirect()->route('Agency.InquiryList', $user_id)
                      ->with('success', 'Verification submitted successfully.');
 }
+
+
+public function inquiryHistoryList($user_id)
+{
+    $this->authorizeUser($user_id);
+
+    $agency = Agency::where('user_id', $user_id)->firstOrFail();
+
+    $inquiries = Inquiry::with(['publicUser.user', 'agency.user'])
+        ->where('Agency_id', $agency->id)
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return view('Agency.InquiryHistory', compact('inquiries'));
+}
+
+public function viewInquiryHistory($user_id, $inquiry_id)
+{
+    $this->authorizeUser($user_id);
+
+    $inquiry = Inquiry::with(['progressUpdates', 'publicUser.user', 'agency.user'])
+                ->findOrFail($inquiry_id);
+
+    return view('Agency.InquiryDetailHistory', compact('inquiry'));
+}
+
+
 }

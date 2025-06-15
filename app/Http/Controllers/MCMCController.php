@@ -15,22 +15,36 @@ use App\Exports\InquiryAssignExport;
 use App\Exports\InquiryExport;
 use App\Exports\UsersExport;
 use App\Exports\AgencyPerfExport;
+use Illuminate\Support\Str;
+use App\Mail\SendTempPasswordMail;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class MCMCController extends Controller
 {
     public function dashboard($user_id)
-    {
-        $this->authorizeUser($user_id);
-        
-        $stats = Inquiry::getStats();
-        $recent = Inquiry::with(['agency', 'user'])
-            ->latest()
-            ->take(10)
-            ->get();
-
-        return view('MCMC.dashboard', array_merge($stats, ['recent' => $recent]));
-        
+{
+    // Ensure user is authorized and MCMC
+    if (!auth()->user()->isMCMC() || auth()->id() != $user_id) {
+        abort(403, 'Unauthorized action.');
     }
+
+    // Inquiry statistics
+    $total = Inquiry::count();
+    $assigned = Inquiry::where('InquiryStatus', 'Assigned')->count();
+    $inProgress = Inquiry::where('InquiryStatus', 'In Progress')->count();
+    $resolved = Inquiry::where('InquiryStatus', 'Resolved')->count();
+
+    // Load recent 10 inquiries (including agency and public user info)
+    $recent = Inquiry::with(['agency.user', 'publicUser.user'])
+        ->latest()
+        ->take(10)
+        ->get();
+
+    // Return to dashboard view
+    return view('MCMC.dashboard', compact('total', 'assigned', 'inProgress', 'resolved', 'recent'));
+}
+
 
     public function InquiryList($user_id)
     {
@@ -166,25 +180,42 @@ class MCMCController extends Controller
     }
 
     public function RegisterUserPost(Request $request, $user_id)
-    {
-        $this->authorizeUser($user_id);
+{
+    $this->authorizeUser($user_id);
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users,email',
-            'password' => 'required|string|min:6',
-            'username' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            
-        ]);
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|unique:users,email',
+        'username' => 'required|string|max:255|unique:agency,username',
+        'phone' => 'required|string|max:20',
+    ]);
 
-        // ✅ Call the model method instead of doing direct DB logic here
-        Agency::createWithUser($validated);
+    // ✅ Generate a temporary password
+    $tempPassword = Str::random(10);
 
-        return redirect()
-            ->route('MCMC.UserData', ['user_id' => $user_id])
-            ->with('success', 'Agency user registered successfully.');
-    }
+    // ✅ Create user
+    $user = User::create([
+        'name' => $validated['name'],
+        'email' => $validated['email'],
+        
+        'password' => Hash::make($tempPassword),
+        'role' => 'Agency',
+    ]);
+
+    // ✅ Create agency profile
+    Agency::create([
+        'user_id' => $user->id,
+        'username' => $validated['username'],
+        'phone' => $validated['phone'],
+    ]);
+
+    // ✅ Send email with temporary password
+    Mail::to($user->email)->send(new SendTempPasswordMail($user, $tempPassword));
+
+    return redirect()
+        ->route('MCMC.UserData', ['user_id' => $user_id])
+        ->with('success', 'Agency user registered and email sent successfully.');
+}
 
     public function filteredInquiries(Request $request, $user_id)
     {
@@ -453,7 +484,7 @@ public function DownloadUserReportPDF(Request $request, $user_id)
     $agencies = Agency::with('user')->get();
     $pdf = Pdf::loadView('MCMC.PDF.UserReport', compact('users', 'agencies'));
 
-    // return $pdf->download('user_report.pdf');
+    return $pdf->download('user_report.pdf');
 }
 // Helper function to filter users
 private function getFilteredUsers(Request $request)

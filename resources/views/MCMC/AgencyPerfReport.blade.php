@@ -24,21 +24,22 @@
         @endforeach
     </select>
 
-    <select name="category" class="p-2 border rounded">
+    <!-- <select name="category" class="p-2 border rounded">
         <option value="">All Categories</option>
-        <!-- <option value="Rumor" {{ request('category') == 'Rumor' ? 'selected' : '' }}>Rumor</option>
-        <option value="Scam" {{ request('category') == 'Scam' ? 'selected' : '' }}>Scam</option> -->
-        <!-- Add more categories as needed -->
-    </select>
+        <option value="Rumor" {{ request('category') == 'Rumor' ? 'selected' : '' }}>Rumor</option>
+        <option value="Scam" {{ request('category') == 'Scam' ? 'selected' : '' }}>Scam</option>
+        
+    </select> -->
 
     <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-700">Filter</button>
 
-    <a href="{{ route('MCMC.DownloadPerfReportExcel', ['user_id' => Auth::id()] + request()->all()) }}" class="text-sm bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800">
-        Download Excel
-    </a>
+    
 
     <a href="{{ route('MCMC.DownloadPerfReportPDF', ['user_id' => Auth::id()] + request()->all()) }}" class="text-sm bg-red-600 text-white px-4 py-2 rounded hover:bg-red-800">
         Download PDF
+    </a>
+    <a href="{{ route('MCMC.DownloadPerfReportExcel', ['user_id' => Auth::id()] + request()->all()) }}" class="text-sm bg-green-600 text-white px-4 py-2 rounded hover:bg-green-800">
+        Download Excel
     </a>
 </form>
 
