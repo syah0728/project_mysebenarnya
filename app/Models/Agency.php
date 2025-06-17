@@ -12,14 +12,11 @@ class Agency extends Model
     protected $table = 'agency';
 
     protected $fillable = [
-        'user_id',     // ✅ Add this line
+        'user_id',   
         'username',
         'phone',
         // Add other fields if your table has them
     ];
-
-    // If you want to allow mass assignment for certain fields, add them here
-    // protected $fillable = ['name', ...];
 
     // Example relationship: An agency has many inquiries
     public function inquiries()
@@ -31,7 +28,12 @@ class Agency extends Model
     {
         return $this->hasMany(Assignment::class, 'Agency_id');
     }
-
+    /**
+     * Create a new agency with an associated user.
+     *
+     * @param array $data
+     * @return \App\Models\Agency
+     */ 
     public static function createWithUser(array $data)
     {
         // 1. Create the user
@@ -45,7 +47,7 @@ class Agency extends Model
         // 2. Create the agency
         $agency = self::create([
             'user_id' => $user->id,
-            'username' => $data['username'],      // ✅ required
+            'username' => $data['username'],    
             'phone' => $data['phone'], 
         ]);
 

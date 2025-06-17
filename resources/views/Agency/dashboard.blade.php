@@ -15,7 +15,7 @@
                     </div>
                     <div class="bg-yellow-100 p-6 rounded-xl shadow text-center min-w-[250px]">
                         <div class="text-3xl font-bold text-yellow-700 mb-2">{{ $pending }}</div>
-                        <div class="text-gray-800">Total Need to Verify</div>
+                        <div class="text-gray-800">Total Need to Review</div>
                     </div>
                     <div class="bg-green-100 p-6 rounded-xl shadow text-center min-w-[250px]">
                         <div class="text-3xl font-bold text-green-700 mb-2">{{ $resolved }}</div>

@@ -269,7 +269,7 @@ public function InquiryAssignReport(Request $request, $user_id)
 
     $inquiries = $query->get();
 
-    // ✅ Format reportData as array of ['agency' => ..., 'total' => ...]
+    
     $reportData = $inquiries->groupBy('agency.user.name')->map(function ($group, $agencyName) {
         return [
             'agency' => $agencyName,
@@ -532,62 +532,6 @@ public function inquiryProgress($user_id)
 
     return view('MCMC.InquiryProgress', compact('inquiries'));
 }
-
-// public function agencyPerformanceReport($user_id)
-// {
-//     if (!auth()->user()->isMCMC() || auth()->id() != $user_id) {
-//         abort(403);
-//     }
-
-//     $agencies = \App\Models\Agency::with(['user', 'inquiries.progressUpdates'])->get();
-
-//     $reportData = $agencies->map(function ($agency) {
-//         $inquiries = $agency->inquiries;
-
-//         $resolved = $inquiries->filter(function ($inq) {
-//             return $inq->progressUpdates->contains(function ($progress) {
-//                 return in_array($progress->ProgressStatus, ['Verified as True', 'Identified as Fake']);
-//             });
-//         });
-
-//         $pending = $inquiries->filter(function ($inq) {
-//             return !$inq->progressUpdates->contains(function ($progress) {
-//                 return in_array($progress->ProgressStatus, ['Verified as True', 'Identified as Fake']);
-//             });
-//         });
-
-//         $avgResolveTime = $resolved->map(function ($inq) {
-//             $start = $inq->created_at;
-//             $resolvedAt = $inq->progressUpdates
-//                 ->whereIn('ProgressStatus', ['Verified as True', 'Identified as Fake'])
-//                 ->sortByDesc('created_at')
-//                 ->first();
-
-//             return $resolvedAt ? $start->diffInHours($resolvedAt->created_at) : null;
-//         })->filter()->avg();
-
-//         $delayed = $resolved->filter(function ($inq) {
-//             $start = $inq->created_at;
-//             $resolvedAt = $inq->progressUpdates
-//                 ->whereIn('ProgressStatus', ['Verified as True', 'Identified as Fake'])
-//                 ->sortByDesc('created_at')
-//                 ->first();
-
-//             return $resolvedAt && $start->diffInDays($resolvedAt->created_at) > 3;
-//         });
-
-//         return [
-//             'agency' => $agency->user->name ?? 'Unknown',
-//             'assigned' => $inquiries->count(),
-//             'resolved' => $resolved->count(),
-//             'pending' => $pending->count(),
-//             'delayed' => $delayed->count(),
-//             'average_hours' => round($avgResolveTime ?? 0, 2),
-//         ];
-//     });
-
-//     return view('MCMC.AgencyPerfReport', compact('reportData'));
-// }
 
 public function agencyPerformanceReport(Request $request, $user_id)
     {

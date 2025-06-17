@@ -2,9 +2,21 @@
 
 @section('content')
 <div class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 px-4 py-12">
+    <div class="relative z-10 mb-6">
+        <div class="flex items-center justify-center">
+            <img src="{{ asset('image/MCMC.png.webp') }}" class="h-20 w-20 object-contain" />
+        </div>
+        <div class="flex items-center justify-center my-2">
+            <div class="w-24 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded"></div>
+        </div>
+        <div class="flex items-center justify-center">
+            <h1 class="text-4xl font-bold text-white">MySebenarnya System</h1>
+        </div>
+    </div>
     <div class="w-full max-w-md bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-8">
         <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Reset Your Password</h2>
 
+        
         @if ($errors->any())
             <div class="mb-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded">
                 <ul class="list-disc list-inside">

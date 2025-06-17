@@ -1,9 +1,8 @@
 @extends('layouts.dashboard')
-
 @section('content')
 <div class="py-12">
-    <div class="bg-gradient-to-tr from-indigo-200 via-purple-300 to-pink-300 max-w-4xl mx-auto rounded-2xl shadow-xl p-8">
-        <h2 class="text-3xl font-extrabold text-center mb-8 text-gray-800 tracking-tight">Verify Inquiry</h2>
+    <div class="bg-gradient-to-tr from-indigo-200 via-purple-300 to-pink-300 rounded-2xl shadow-xl p-8">
+    <h2 class="text-3xl font-extrabold mb-8 text-gray-900 tracking-wide">MyVerify Inquiry</h2>
 
         <!-- Inquiry Summary -->
         <div class="mb-6">
@@ -82,7 +81,8 @@
 
             <!-- Submit Button -->
             <div class="flex justify-between items-center">
-                <a href="{{ route('Agency.InquiryList', ['user_id' => auth()->id()]) }}" class="text-sm text-gray-600 hover:underline">
+                <a href="{{ route('Agency.InquiryList', ['user_id' => auth()->id()]) }}" 
+                    class="mt-6 inline-block text-blue-600 hover:underline">
                     ← Back to Inquiry List
                 </a>
                 <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg shadow">

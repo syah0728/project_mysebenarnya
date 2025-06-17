@@ -32,6 +32,7 @@ class PublicUserController extends Controller
         $user = auth()->user();
         $user->name = $request->name;
         if ($user->publicUser) {
+            $user->publicUser->name = $request->name;
             $user->publicUser->phone = $request->phone;
             $user->publicUser->save();
         }
@@ -176,19 +177,25 @@ public function dashboard($user_id)
     return view('PublicUser.dashboard', compact('total', 'pending', 'inProgress', 'resolved', 'recent'));
 }
 
-
-    public function publicInquiry($user_id)
-    {
-        if (auth()->id() != $user_id || !auth()->user()->isPublicUser()) {
-            abort(403, 'Unauthorized');
-        }
-
-        $inquiries = Inquiry::where('InquiryStatus', 'Verified')
-                        ->orderBy('created_at', 'desc')
-                        ->get();
-
-        return view('PublicUser.PublicInquiry', compact('inquiries'));
+public function publicInquiry($user_id)
+{
+    if (auth()->id() != $user_id || !auth()->user()->isPublicUser()) {
+        abort(403, 'Unauthorized');
     }
+
+    $inquiries = Inquiry::where('InquiryStatus', 'Resolved')
+        ->whereHas('progress', function ($query) {
+            $query->whereIn('ProgressStatus', ['Verified as True', 'Identified as Fake']);
+        })
+        ->with(['progress' => function ($q) {
+            $q->latest()->limit(1); // optionally get only latest
+        }])
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return view('PublicUser.PublicInquiry', compact('inquiries'));
+}
+
 
 public function inquiryProgress(Request $request)
 {

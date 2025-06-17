@@ -210,4 +210,10 @@ public function assignment()
 {
     return $this->hasOne(Assignment::class, 'Inquiry_id');
 }
+
+public function progress()
+{
+    return $this->hasMany(Progress::class, 'Inquiry_id');
+}
+
 }

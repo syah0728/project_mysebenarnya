@@ -62,7 +62,7 @@
                 <tbody>
                     @forelse($filteredInquiries as $inquiry)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-2">{{ $inquiry->user->name ?? 'N/A' }}</td>
+                            <td class="px-4 py-2">{{ $inquiry->publicUser->name ?? 'N/A' }}</td>
                             <td class="px-4 py-2">{{ $inquiry->NewsTitle }}</td>
                             <td class="px-4 py-2">{{ $inquiry->InquiryStatus }}</td>
                             <td class="px-4 py-2">{{ $inquiry->created_at->format('d M Y') }}</td>
