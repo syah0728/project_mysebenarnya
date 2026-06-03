@@ -53,7 +53,8 @@ class UserRegisterController extends Controller
             // Log in the user
             Auth::login($user);
 
-            return redirect()->route('PublicUser.dashboard', ['user_id' => $user->id]);
+            $user->sendEmailVerificationNotification();
+            return redirect()->route('verification.notice');
             
         } catch (\Exception $e) {
             // Rollback the transaction if something goes wrong

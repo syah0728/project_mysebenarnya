@@ -1,6 +1,7 @@
 <?php
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\PublicUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -26,6 +27,36 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [UserRegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [UserRegisterController::class, 'register']);
 });
+
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
+    // Cari user by id
+    $user = \App\Models\User::findOrFail($id);
+
+    // Verify hash
+    if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        abort(403, 'Invalid verification link.');
+    }
+
+    // Mark as verified kalau belum
+    if (! $user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+    }
+
+    // Login user
+    Auth::login($user);
+
+    // return redirect()->route('PublicUser.dashboard', ['user_id' => $user->id])
+    //                  ->with('success', 'Email verified! Welcome aboard.');
+})->middleware(['signed'])->name('verification.verify');
+// Resend email
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('resent', true);
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 //Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
 //Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.update');

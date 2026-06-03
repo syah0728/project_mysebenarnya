@@ -9,6 +9,9 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Hash;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\VerifyEmailNotification;
+
 class User extends Authenticatable
 {
     use HasApiTokens;
@@ -131,6 +134,11 @@ class User extends Authenticatable
     public function isAgency()
     {
         return $this->role === 'Agency';
+    }
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmailNotification());
     }
 }
 
