@@ -615,4 +615,40 @@ public function agencyPerformanceReport(Request $request, $user_id)
             ];
         })->filter();
     }
+
+     //SEM module 3
+    public function bulkAssignInquiry(Request $request, $user_id)
+    {
+        $user = auth()->user();
+        if (!$user->isMCMC() || $user->id != $user_id) {
+            abort(403, 'Unauthorized access.');
+        }
+    
+        $request->validate([
+            'inquiry_ids'   => 'required|array|min:1',
+            'inquiry_ids.*' => 'exists:inquiry,id',
+            'agency_id'     => 'required|exists:agency,id',
+            'due_date'      => 'required|date|after_or_equal:today',
+            'comments'      => 'required|string',
+        ]);
+    
+        foreach ($request->inquiry_ids as $inquiryId) {
+            $inquiry = Inquiry::findOrFail($inquiryId);
+    
+            // masuk data ke table assignment
+            \App\Models\Assignment::create([
+                'Inquiry_id'       => $inquiryId,
+                'Agency_id'        => $request->agency_id,
+                'PublicUser_id'    => $inquiry->PublicUser_id, 
+                'AssignmentDate'   => now()->toDateString(),
+                'due_date'         => $request->due_date,
+                'comments'         => $request->comments,
+                'AssignmentStatus' => 'Assigned',
+            ]);
+    
+            $inquiry->update(['InquiryStatus' => 'Assigned', 'Agency_id' => $request->agency_id]);
+        }
+    
+        return redirect()->back()->with('success', count($request->inquiry_ids) . ' inquiries assigned successfully.');
+    }
 }

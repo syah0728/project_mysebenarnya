@@ -181,6 +181,8 @@ Route::prefix('MCMC/{user_id}')->name('MCMC.')->group(function () {
     Route::get('/agency-performance-report/pdf', [MCMCController::class, 'DownloadPerfReportPDF'])->name('DownloadPerfReportPDF');
     Route::get('/agency-performance-report/excel', [MCMCController::class, 'DownloadPerfReportExcel'])->name('DownloadPerfReportExcel');
 
+    //SEM Module 3
+    Route::post('/bulk-assign-inquiry', [MCMCController::class, 'bulkAssignInquiry'])->name('BulkAssignInquiry');
 });
 
 // Agency Routes Group
