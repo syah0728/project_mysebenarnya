@@ -2,6 +2,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\PublicUserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -57,6 +58,12 @@ Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
     return back()->with('resent', true);
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return view('auth.verified-success');
+})->middleware(['auth', 'signed'])->name('verification.verify');
 
 //Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
 //Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.update');
