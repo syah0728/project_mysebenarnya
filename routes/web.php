@@ -10,6 +10,10 @@ use App\Http\Controllers\MCMCController;
 use App\Http\Controllers\AgencyController;
 use App\Http\Controllers\NewPasswordController;
 
+//Perfective Maintenance: Email Verification
+use Illuminate\Http\Request;
+//
+
 // Welcome Page Route
 Route::get('/', function () {
     return view('welcome');
@@ -30,8 +34,6 @@ Route::middleware('guest')->group(function () {
 
 
 //Perfective Maintenance: Email Verification
-use Illuminate\Http\Request;
-
 Route::get('/email/verify', function () {
     return view('auth.verify-email');
 })->middleware('auth')->name('verification.notice');

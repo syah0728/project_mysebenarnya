@@ -9,6 +9,11 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Hash;
 
+//Perfective Maintenance: Email Verification
+    use Illuminate\Contracts\Auth\MustVerifyEmail;
+    use App\Notifications\VerifyEmailNotification;
+//
+
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens;
@@ -135,9 +140,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
 
 //Perfective Maintenance: Email Verification
-    use Illuminate\Contracts\Auth\MustVerifyEmail;
-    use App\Notifications\VerifyEmailNotification;
-
     public function sendEmailVerificationNotification()
     {
         $this->notify(new VerifyEmailNotification());
