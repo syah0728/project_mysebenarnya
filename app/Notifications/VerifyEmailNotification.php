@@ -16,3 +16,4 @@ class VerifyEmailNotification extends VerifyEmail
             ->view('emails.VerificationEmail', ['url' => $url]);
     }
 }
+

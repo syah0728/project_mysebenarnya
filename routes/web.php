@@ -1,7 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\PublicUserController;
 use App\Http\Controllers\Auth\LoginController;
@@ -28,6 +27,10 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [UserRegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [UserRegisterController::class, 'register']);
 });
+
+
+//Perfective Maintenance: Email Verification
+use Illuminate\Http\Request;
 
 Route::get('/email/verify', function () {
     return view('auth.verify-email');
@@ -64,6 +67,7 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 
     return view('auth.verified-success');
 })->middleware(['auth', 'signed'])->name('verification.verify');
+//
 
 //Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
 //Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.update');

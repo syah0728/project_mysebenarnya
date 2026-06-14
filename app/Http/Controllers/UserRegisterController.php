@@ -53,8 +53,11 @@ class UserRegisterController extends Controller
             // Log in the user
             Auth::login($user);
 
+        
+            //Perfective Maintenance: Email Verification
             $user->sendEmailVerificationNotification();
             return redirect()->route('verification.notice');
+            //
             
         } catch (\Exception $e) {
             // Rollback the transaction if something goes wrong
